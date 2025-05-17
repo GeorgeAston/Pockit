@@ -48,7 +48,8 @@ button {
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #297d16;
+    color: #fff;
 }
 
 #reminder-list h2 {
