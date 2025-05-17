@@ -28,13 +28,18 @@ main {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+p {
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
 button {
     display: block;
     width: 100%;
     padding: 10px 15px;
     margin-bottom: 20px;
-    background-color: #007bff;
-    color: #fff;
+    background-color: #ff9d00;
+    color: #000000;
     border: none;
     border-radius: 5px;
     cursor: pointer;
