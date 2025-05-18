@@ -1,5 +1,8 @@
 # Pockit - Your Simple Pocket Reminder
 
+>[!NOTE]
+This file is no longer shown on the website, as it has been replaced with [/help](/help.html), but this file is still available to view on GitHub, and manually using the link: [/readme.md (this file)](/readme.md). 
+
 ## What is Pockit?
 
 Pockit is a straightforward and easy-to-use web application designed to help you set and manage reminders for your everyday tasks. Accessible directly through your web browser and installable as a Progressive Web App (PWA), Pockit aims to be your reliable "pocket pal" for keeping track of what's important.
