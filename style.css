@@ -19,6 +19,20 @@ header {
     height: auto;
 }
 
+img {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: none;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -ms-user-drag: none;
+}
+
 main {
     max-width: 800px;
     margin: 0 auto;
@@ -65,7 +79,7 @@ button:hover {
 }
 
 #reminders li {
-    background-color: #f9f9f9;
+    background-color: #003d24;
     border: 1px solid #eee;
     border-radius: 5px;
     padding: 15px;
@@ -80,7 +94,7 @@ button:hover {
 }
 
 #reminders li button {
-    background-color: #dc3545;
+    background-color: #990000;
     color: #fff;
     border: none;
     padding: 8px 12px;
@@ -104,6 +118,19 @@ footer {
     color: #ffffff;
     font-size: 0.9rem;
 }
+
+a:link {
+  color: #ffffff;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+a:hover {
+  color: #ffb836;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
 
 /* Basic Responsive Design */
 @media (max-width: 600px) {

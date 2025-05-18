@@ -87,4 +87,9 @@ document.addEventListener('DOMContentLoaded', () => {
             emptyListMessage.style.display = 'none';
         }
     }
+    
+    /* document.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+    });
+    */
 });
