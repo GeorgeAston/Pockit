@@ -78,17 +78,33 @@ button:hover {
     padding: 0;
 }
 
+
+/* --- Reminder Highlight Colors --- */
+.past-reminder {
+    background-color: #5f1010; /* Muted deep red background */
+    border-left: 5px solid #9e3d3d; /* Complementary darker red border */
+    color: #e0e0e0; /* Ensure text remains light and readable */
+    /* Removed opacity: 0.7; to make it fully colored */
+}
+
+.upcoming-reminder {
+    background-color: #573706; /* Muted warm orange/gold background */
+    border-left: 5px solid #b58d3d; /* Complementary darker orange/gold border */
+    color: #e0e0e0; /* Ensure text remains light and readable */
+}
+
+/* Ensure padding is consistent despite border-left */
 #reminders li {
-    background-color: #3a3a3a; /* Darker background for list items */
     border: 1px solid #444; /* Darker border */
     border-radius: 5px;
-    padding: 15px;
     margin-bottom: 10px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
     color: #e0e0e0; /* Lighter text for list items */
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .reminder-details {
@@ -104,7 +120,7 @@ button:hover {
 
 .reminder-datetime {
     font-size: 0.9em;
-    color: #bbb; /* Slightly darker light text for date/time */
+    color: #ebd8d8; /* Slightly darker light text for date/time */
 }
 
 .reminder-actions button {

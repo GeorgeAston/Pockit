@@ -7,32 +7,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const reminderText = document.getElementById('reminder-text');
     const reminderDate = document.getElementById('reminder-date');
     const reminderTime = document.getElementById('reminder-time');
-    const reminderIdHidden = document.getElementById('reminder-id-hidden'); // For editing
+    const reminderIdHidden = document.getElementById('reminder-id-hidden');
     const cancelReminderButton = document.getElementById('cancel-reminder');
 
     const remindersList = document.getElementById('reminders');
     const emptyListMessage = document.getElementById('empty-list-message');
 
-    const remindersKey = 'pockitReminders'; // Key for localStorage
+    const remindersKey = 'pockitReminders';
 
     // --- Initial Load ---
-    loadReminders();
-    updateEmptyListVisibility();
+    loadAndRenderReminders();
+    // Re-render reminders every minute to update highlights
+    setInterval(loadAndRenderReminders, 60 * 1000);
 
     // --- Event Listeners ---
 
     // Show the Add/Edit Reminder modal
     showAddReminderModalButton.addEventListener('click', () => {
-        // Reset form for adding new reminder
         reminderForm.reset();
-        reminderIdHidden.value = ''; // Clear hidden ID for new reminder
-        // Set default date/time for convenience (current date, 15 mins from now)
-        const now = new Date();
-        const future = new Date(now.getTime() + 15 * 60 * 1000); // 15 minutes from now
-        reminderDate.value = future.toISOString().split('T')[0]; // YYYY-MM-DD
-        reminderTime.value = future.toTimeString().split(' ')[0].substring(0, 5); // HH:MM
-
-        addReminderModal.style.display = 'block'; // Show modal
+        reminderIdHidden.value = '';
+        // Clear date and time by default for optional input
+        reminderDate.value = '';
+        reminderTime.value = '';
+        addReminderModal.style.display = 'block';
+        reminderText.focus(); // Focus on the text input for immediate typing
     });
 
     // Close modal via 'x' button or 'Cancel'
@@ -53,25 +51,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle form submission (Add or Edit Reminder)
     reminderForm.addEventListener('submit', (event) => {
-        event.preventDefault(); // Prevent default form submission
+        event.preventDefault();
 
         const id = reminderIdHidden.value || Date.now().toString(); // Use existing ID or generate new
         const text = reminderText.value.trim();
-        const date = reminderDate.value;
-        const time = reminderTime.value;
+        const date = reminderDate.value; // Can be empty
+        const time = reminderTime.value; // Can be empty
 
-        if (text && date && time) {
-            saveOrUpdateReminder(id, text, date, time);
-            addReminderModal.style.display = 'none'; // Hide modal after saving
-        } else {
-            alert('Please fill in all reminder details!');
+        if (!text) {
+            alert('Reminder text is required!');
+            return;
         }
+
+        // If date is provided, time should ideally be too, and vice versa
+        if ((date && !time) || (!date && time)) {
+            alert('Please provide both date AND time, or neither.');
+            return;
+        }
+
+        saveOrUpdateReminder(id, text, date, time);
+        addReminderModal.style.display = 'none';
     });
 
     // Handle clicks within the reminders list (for Delete/Edit)
     remindersList.addEventListener('click', (event) => {
-        const listItem = event.target.closest('li'); // Find the closest list item
-        if (!listItem) return; // Not a click on a list item
+        const listItem = event.target.closest('li');
+        if (!listItem) return;
 
         const reminderId = listItem.dataset.reminderId;
 
@@ -79,8 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target.classList.contains('delete-button')) {
             if (confirm('Are you sure you want to delete this reminder?')) {
                 deleteReminder(reminderId);
-                listItem.remove(); // Remove from DOM
-                updateEmptyListVisibility();
+                loadAndRenderReminders(); // Re-render to update the list
             }
         }
         // --- Edit Reminder ---
@@ -91,33 +95,54 @@ document.addEventListener('DOMContentLoaded', () => {
             if (reminderToEdit) {
                 reminderIdHidden.value = reminderToEdit.id;
                 reminderText.value = reminderToEdit.text;
-                reminderDate.value = reminderToEdit.date;
-                reminderTime.value = reminderToEdit.time;
-                addReminderModal.style.display = 'block'; // Show modal for editing
+                reminderDate.value = reminderToEdit.date || ''; // Ensure empty string if not set
+                reminderTime.value = reminderToEdit.time || ''; // Ensure empty string if not set
+                addReminderModal.style.display = 'block';
+                reminderText.focus();
             }
         }
     });
 
     // --- Core Functions ---
 
-    function loadReminders() {
+    // Loads reminders from localStorage, sorts them, and renders them to the DOM
+    function loadAndRenderReminders() {
         const storedReminders = localStorage.getItem(remindersKey);
-        if (storedReminders) {
-            const reminders = JSON.parse(storedReminders);
-            // Sort reminders by date and time
-            reminders.sort((a, b) => {
+        let reminders = storedReminders ? JSON.parse(storedReminders) : [];
+
+        // Sort reminders:
+        // 1. Reminders with date/time first
+        // 2. Then by date/time (earliest first)
+        // 3. Reminders without date/time come last, sorted by their ID (creation time)
+        reminders.sort((a, b) => {
+            const hasDateTimeA = a.date && a.time;
+            const hasDateTimeB = b.date && b.time;
+
+            if (hasDateTimeA && !hasDateTimeB) return -1; // A has date/time, B doesn't -> A comes first
+            if (!hasDateTimeA && hasDateTimeB) return 1;  // B has date/time, A doesn't -> B comes first
+
+            if (hasDateTimeA && hasDateTimeB) {
+                // Both have date/time, sort by actual date/time
                 const dateTimeA = new Date(`${a.date}T${a.time}`);
                 const dateTimeB = new Date(`${b.date}T${b.time}`);
                 return dateTimeA - dateTimeB;
-            });
-            reminders.forEach(reminder => {
-                addReminderToDOM(reminder);
-            });
-        }
+            } else {
+                // Neither has date/time, sort by creation ID (which is Date.now().toString())
+                return parseInt(a.id) - parseInt(b.id);
+            }
+        });
+
+        remindersList.innerHTML = ''; // Clear current list before re-rendering
+        reminders.forEach(reminder => {
+            addReminderToDOM(reminder);
+        });
+        updateEmptyListVisibility();
     }
 
+
     function saveOrUpdateReminder(id, text, date, time) {
-        const newReminder = { id, text, date, time };
+        // Ensure date and time are stored as empty strings if not provided
+        const newReminder = { id, text, date: date || '', time: time || '' };
         let reminders = JSON.parse(localStorage.getItem(remindersKey)) || [];
 
         const existingIndex = reminders.findIndex(r => r.id === id);
@@ -125,19 +150,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (existingIndex > -1) {
             // Update existing reminder
             reminders[existingIndex] = newReminder;
-            // Remove old DOM element to re-add it sorted
-            const oldElement = document.querySelector(`li[data-reminder-id="${id}"]`);
-            if (oldElement) oldElement.remove();
         } else {
             // Add new reminder
             reminders.push(newReminder);
         }
 
         saveReminders(reminders);
-        // Re-render all reminders to ensure correct sorting
-        remindersList.innerHTML = ''; // Clear current list
-        loadReminders(); // Reload and re-sort
-        updateEmptyListVisibility();
+        loadAndRenderReminders(); // Re-render to ensure correct sorting and highlighting
     }
 
     function saveReminders(reminders) {
@@ -155,15 +174,19 @@ document.addEventListener('DOMContentLoaded', () => {
         reminderTextSpan.textContent = reminder.text;
         reminderTextSpan.classList.add('reminder-text');
 
-        const reminderDateTimeSpan = document.createElement('span');
-        // Format date and time for better readability
-        const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
-        const displayDate = new Date(`${reminder.date}T${reminder.time}`).toLocaleString(undefined, options);
-        reminderDateTimeSpan.textContent = ` (${displayDate})`;
-        reminderDateTimeSpan.classList.add('reminder-datetime');
-
         reminderDetails.appendChild(reminderTextSpan);
-        reminderDetails.appendChild(reminderDateTimeSpan);
+
+        // Only add date/time span if date is provided
+        if (reminder.date) {
+            const reminderDateTimeSpan = document.createElement('span');
+            const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
+            // Use current date if reminder time is missing to form a valid Date object for display
+            const displayDateString = reminder.time ? `${reminder.date}T${reminder.time}` : `${reminder.date}T00:00`;
+            const displayDate = new Date(displayDateString).toLocaleString(undefined, options);
+            reminderDateTimeSpan.textContent = ` (${displayDate})`;
+            reminderDateTimeSpan.classList.add('reminder-datetime');
+            reminderDetails.appendChild(reminderDateTimeSpan);
+        }
 
         const actionsDiv = document.createElement('div');
         actionsDiv.classList.add('reminder-actions');
@@ -181,6 +204,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         listItem.appendChild(reminderDetails);
         listItem.appendChild(actionsDiv);
+
+        // --- Highlighting Logic ---
+        if (reminder.date && reminder.time) {
+            const reminderDateTime = new Date(`${reminder.date}T${reminder.time}`);
+            const now = new Date();
+
+            if (reminderDateTime < now) {
+                listItem.classList.add('past-reminder');
+            } else if (reminderDateTime > now && reminderDateTime.getTime() - now.getTime() < 24 * 60 * 60 * 1000) {
+                // Highlight as upcoming if within next 24 hours
+                listItem.classList.add('upcoming-reminder');
+            }
+        }
+        // If no date/time, no specific highlight class added
+
         remindersList.appendChild(listItem);
     }
 
