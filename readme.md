@@ -23,12 +23,18 @@ As of the current version, Pockit offers the following core features:
 
 ### 3. Deleting Reminders
 
-* **Individual Deletion:** Each reminder in the list has a "Delete" button next to it. Clicking this button will remove that specific reminder from your list and from your browser's local storage.
+* **Individual Deletion:** Each reminder in the list has a "Delete" button next to it. 
+>[!CAUTION]
+> Clicking this button will remove that specific reminder from your list and from your browser's local storage.
 
 ### 4. Progressive Web App (PWA) Features
 
-* **Installable:** Pockit can be installed to your device's home screen or app launcher, behaving like a native application. Look for the "Install" option in your browser's menu (usually three dots or a similar icon).
-* **Offline Access (Basic):** Once you have loaded Pockit in your browser, the basic structure of the app should be accessible even if you temporarily lose your internet connection. However, adding or deleting reminders requires the app to be running in your browser.
+>[!NOTE]
+> Did you know that Pockit is: 
+>* **Installable:** Pockit can be installed to your device's home screen or app launcher, behaving like a native application. Look for the "Install" option in your browser's menu (usually three dots or a similar icon).
+>
+>and has: 
+>* **Offline Access:** Once you have loaded Pockit in your browser, the basic structure of the app should be accessible even if you temporarily lose your internet connection. However, adding or deleting reminders requires the app to be running in your browser.
 
 ### 5. Privacy Focused
 
