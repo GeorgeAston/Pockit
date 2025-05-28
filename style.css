@@ -1,13 +1,14 @@
+/* General Body and Main Container Styling for Dark Mode */
 body {
     font-family: sans-serif;
     margin: 20px;
     line-height: 1.6;
-    background-color: #130035;
-    color: #f0bdbd;
+    background-color: #1a1a1a; /* Dark background */
+    color: #f0f0f0; /* Light text color */
 }
 
 header {
-    background-color: #1a1439;
+    background-color: #333; /* Slightly lighter dark for header */
     color: #fff;
     padding: 15px 0;
     text-align: center;
@@ -15,45 +16,29 @@ header {
 }
 
 #logo {
-    width: 175px;
+    max-width: 150px; /* Adjust logo size */
     height: auto;
-}
-
-img {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    pointer-events: none;
-    -webkit-user-drag: none;
-    -khtml-user-drag: none;
-    -moz-user-drag: none;
-    -ms-user-drag: none;
+    display: block;
+    margin: 0 auto 10px; /* Center logo and add space below */
 }
 
 main {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #1f2c58;
+    background-color: #2b2b2b; /* Darker main content background */
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); /* Darker shadow for contrast */
 }
 
-p {
-    margin-bottom: 20px;
-    font-size: 0.9rem;
-}
-
+/* --- Buttons (Global and Specific) --- */
 button {
     display: block;
     width: 100%;
     padding: 10px 15px;
     margin-bottom: 20px;
-    background-color: #ff9d00;
-    color: #000000;
+    background-color: #007bff; /* Stays blue for primary action */
+    color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -62,13 +47,13 @@ button {
 }
 
 button:hover {
-    background-color: #297d16;
-    color: #fff;
+    background-color: #0056b3; /* Darker blue on hover */
 }
 
+/* --- Reminder List Styling --- */
 #reminder-list h2 {
     margin-top: 0;
-    border-bottom: 2px solid #ccc;
+    border-bottom: 2px solid #555; /* Lighter border for contrast */
     padding-bottom: 10px;
     margin-bottom: 15px;
 }
@@ -79,60 +64,140 @@ button:hover {
 }
 
 #reminders li {
-    background-color: #003d24;
-    border: 1px solid #eee;
+    background-color: #3a3a3a; /* Darker background for list items */
+    border: 1px solid #444; /* Darker border */
     border-radius: 5px;
     padding: 15px;
     margin-bottom: 10px;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
+    color: #e0e0e0; /* Lighter text for list items */
 }
 
-#reminders li span {
+.reminder-details {
     flex-grow: 1;
+    margin-right: 15px;
 }
 
-#reminders li button {
-    background-color: #990000;
+.reminder-text {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.reminder-datetime {
+    font-size: 0.9em;
+    color: #bbb; /* Slightly darker light text for date/time */
+}
+
+.reminder-actions button {
+    /* These inherit from the global button style initially for shared properties */
     color: #fff;
     border: none;
     padding: 8px 12px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 0.9rem;
-    margin-left: 10px;
+    margin-left: 8px;
     transition: background-color 0.3s ease;
-    display: inline-block; /* Override block display for list item buttons */
-    width: auto;        /* Adjust width to content */
+    width: auto;
+    display: inline-block;
 }
 
-#reminders li button:hover {
+.reminder-actions .edit-button {
+    background-color: #007bff; /* Blue for Edit */
+}
+.reminder-actions .edit-button:hover {
+    background-color: #0056b3;
+}
+
+.reminder-actions .delete-button {
+    background-color: #dc3545; /* Red for Delete */
+}
+
+.reminder-actions .delete-button:hover {
     background-color: #c82333;
 }
 
+/* --- Footer Styling --- */
 footer {
     text-align: center;
     margin-top: 20px;
     padding: 10px 0;
-    color: #ffffff;
+    color: #aaa; /* Lighter gray for footer text */
     font-size: 0.9rem;
 }
 
-a:link {
-  color: #ffffff;
-  background-color: transparent;
-  text-decoration: underline;
+footer a {
+    color: #90caf9; /* Lighter blue for links */
+    text-decoration: none;
 }
 
-a:hover {
-  color: #ffb836;
-  background-color: transparent;
-  text-decoration: underline;
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* --- Modal Styling for Dark Mode --- */
+.modal {
+    background-color: rgba(0,0,0,0.6); /* Slightly darker overlay for contrast */
+}
+
+.modal-content {
+    background-color: #3b3b3b; /* Darker background for modal */
+    border: 1px solid #555; /* Darker border */
+    box-shadow: 0 4px 12px 0 rgba(0,0,0,0.4), 0 6px 20px 0 rgba(0,0,0,0.3); /* Darker shadow */
+    color: #e0e0e0; /* Light text inside modal */
+}
+
+.modal-content h2 {
+    border-bottom: 2px solid #555;
+    color: #fff; /* Ensure heading is bright */
+}
+
+.close-button {
+    color: #ccc; /* Lighter close button */
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #fff; /* White on hover */
+}
+
+/* --- Form Styling within modal for Dark Mode --- */
+#reminder-form label {
+    color: #e0e0e0; /* Lighter label text */
+}
+
+#reminder-form input[type="text"],
+#reminder-form input[type="date"],
+#reminder-form input[type="time"] {
+    background-color: #4a4a4a; /* Darker input background */
+    color: #f0f0f0; /* Light input text */
+    border: 1px solid #666; /* Lighter border for visibility */
+}
+
+/* Style for save button */
+#reminder-form button[type="submit"] {
+    background-color: #28a745; /* Green color for save */
+}
+
+#reminder-form button[type="submit"]:hover {
+    background-color: #218838;
+}
+
+/* Style for cancel button */
+#reminder-form #cancel-reminder {
+    background-color: #6c757d; /* Gray color for cancel */
+}
+
+#reminder-form #cancel-reminder:hover {
+    background-color: #5a6268;
 }
 
 
-/* Basic Responsive Design */
+/* --- Basic Responsive Design for Dark Mode --- */
 @media (max-width: 600px) {
     body {
         margin: 10px;
@@ -157,9 +222,31 @@ a:hover {
         align-items: flex-start;
     }
 
-    #reminders li button {
-        margin-top: 10px;
-        margin-left: 0;
-        width: auto;
+    .reminder-details {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .reminder-actions {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+    }
+    .reminder-actions button {
+        margin-left: 5px;
+        margin-right: 0;
+        padding: 7px 10px;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 20px auto;
+        padding: 15px;
+    }
+
+    #reminder-form input[type="text"],
+    #reminder-form input[type="date"],
+    #reminder-form input[type="time"] {
+        width: calc(100% - 20px);
     }
 }
