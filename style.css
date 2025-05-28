@@ -22,6 +22,21 @@ header {
     margin: 0 auto 10px; /* Center logo and add space below */
 }
 
+a {
+    color: #62b8ff; /* Lighter blue for links */
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+    color: #3e88c5; /* Slightly darker blue on hover */
+}
+a:visited {
+    color: #168400; /* Lighter blue for visited links */
+}
+a:active {
+    color: #896a03; /* Darker blue for active links */
+}
+
 main {
     max-width: 800px;
     margin: 0 auto;
