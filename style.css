@@ -295,3 +295,84 @@ footer a:hover {
         width: calc(100% - 20px);
     }
 }
+
+/* ------------------------------- */
+/* --- Feedback Pop-up Styling --- */
+.feedback-popup {
+    display: block; /* Change to block, hide initially with opacity/pointer-events */
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #3b3b3b; /* Dark background */
+    color: #e0e0e0; /* Light text */
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    max-width: 300px;
+    text-align: center;
+    z-index: 1000; /* Ensure it's above other content */
+    opacity: 0; /* Start invisible for fade-in effect */
+    transform: translateY(20px); /* Start slightly below for slide-up effect */
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out; /* Keep these for smooth show/hide */
+    pointer-events: none; /* Make it unclickable when hidden */
+}
+
+.feedback-popup.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto; /* Make it clickable when visible */
+}
+
+.feedback-popup p {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+}
+
+.feedback-popup-actions {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px; /* Space between buttons */
+}
+
+.feedback-button,
+.feedback-dismiss-button {
+    flex-grow: 1; /* Make buttons share space */
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    text-align: center; /* Ensure text is centered for links */
+    text-decoration: none; /* Remove underline for links */
+    transition: background-color 0.3s ease;
+    margin-bottom: 0; /* Override global button margin */
+}
+
+.feedback-button {
+    background-color: #007bff; /* Blue for suggestion */
+    color: #fff;
+    border: none;
+}
+
+.feedback-button:hover {
+    background-color: #0056b3;
+}
+
+.feedback-dismiss-button {
+    background-color: #6c757d; /* Gray for dismiss */
+    color: #fff;
+    border: none;
+}
+
+.feedback-dismiss-button:hover {
+    background-color: #5a6268;
+}
+
+/* Responsive adjustment for very small screens */
+@media (max-width: 480px) {
+    .feedback-popup {
+        right: 10px;
+        bottom: 10px;
+        max-width: calc(100% - 40px); /* Adjust width to fit */
+    }
+}

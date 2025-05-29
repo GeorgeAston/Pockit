@@ -236,3 +236,74 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
+// --- Feedback Pop-up Logic ---
+    const feedbackPopup = document.getElementById('feedback-popup');
+    const dismissFeedbackButton = document.querySelector('.feedback-dismiss-button');
+    const feedbackLastDismissedKey = 'pockitFeedbackLastDismissed'; // Key to store timestamp
+    const FOUR_WEEKS_IN_MS = 4 * 7 * 24 * 60 * 60 * 1000; // 4 weeks in milliseconds
+
+    // Function to show the feedback popup
+    function showFeedbackPopup() {
+        const lastDismissed = localStorage.getItem(feedbackLastDismissedKey);
+        const now = Date.now();
+
+        // Only show if never dismissed, or if 4 weeks have passed since last dismissal
+        if (!lastDismissed || (now - parseInt(lastDismissed) > FOUR_WEEKS_IN_MS)) {
+            feedbackPopup.style.display = 'block'; // Make it display first for transition
+            // Trigger transition after a short delay
+            setTimeout(() => {
+                feedbackPopup.classList.add('show');
+            }, 50);
+        }
+    }
+
+    // Function to hide and mark as dismissed (with timestamp)
+    function dismissFeedbackPopup() {
+        // Temporarily change the text to show the "ask again" message
+        const originalParagraph = feedbackPopup.querySelector('p');
+        const originalText = originalParagraph.textContent; // Store original text
+        const originalActions = feedbackPopup.querySelector('.feedback-popup-actions'); // Store original actions div
+
+        originalParagraph.textContent = "Okay, we'll ask again in 4 weeks. Thanks!";
+        originalActions.style.display = 'none'; // Hide buttons immediately
+
+        // Keep the 'show' class for 1.5 seconds, then remove it
+        // This will allow the message to be seen
+        setTimeout(() => {
+            feedbackPopup.classList.remove('show'); // Start fade-out animation
+            // After fade-out, restore content and truly hide
+            setTimeout(() => {
+                originalParagraph.textContent = originalText; // Restore original text
+                originalActions.style.display = 'flex'; // Restore buttons
+                feedbackPopup.style.display = 'none'; // Finally hide it
+            }, 300); // This should match your CSS transition duration (0.5s)
+        }, 5000); // This is the delay for displaying the "Okay, we'll ask again..." message
+
+        // Store current timestamp
+        localStorage.setItem(feedbackLastDismissedKey, Date.now().toString());
+    }
+
+    // Adjust showFeedbackPopup slightly to match new display:block; initial state
+    function showFeedbackPopup() {
+        const lastDismissed = localStorage.getItem(feedbackLastDismissedKey);
+        const now = Date.now();
+
+        if (!lastDismissed || (now - parseInt(lastDismissed) > FOUR_WEEKS_IN_MS)) {
+            feedbackPopup.style.display = 'block'; // Ensure it's 'display: block' for transitions
+            // Trigger transition after a short delay
+            setTimeout(() => {
+                feedbackPopup.classList.add('show');
+            }, 50);
+        } else {
+            // Ensure it's hidden if conditions are not met
+            feedbackPopup.style.display = 'none';
+            feedbackPopup.classList.remove('show'); // Just in case
+        }
+    }
+
+    // Event listener for dismiss button
+    dismissFeedbackButton.addEventListener('click', dismissFeedbackPopup);
+
+    // Show the feedback popup after a delay (e.g., 5 seconds)
+    setTimeout(showFeedbackPopup, 5000); // 5000ms = 5 seconds
