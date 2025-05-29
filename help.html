@@ -8,12 +8,12 @@
 </head>
 <body>
     <main>
-        <img src="images/logo.png" alt="Pockit Logo" id="logo" style="display: block; margin: 0 auto;">
+        <a id="logo" href="index.html"><img src="images/logo.png" alt="Pockit Logo" id="logo" style="display: block; margin: 0 auto;"></a>
         <p style="text-align: center;"><strong>Need some help with Pockit?</strong></p>
-        <p><strong><a href="index.html">&larr; Go back to Pockit</a></strong></p>
+        <p><strong><a href="#" class="jsback">&larr; Go back</a></strong></p>
     </main>
     <br>
-    <h3 style="text-align: center;"><strong>Note: This page will be updated soon to refelct the new changes to Pockit.</strong></h3>
+    <h3 style="text-align: center;"><strong>Note: This page has been updated to refelct the new changes to Pockit.</strong></h3>
     <main>
         <section>
             <h2>What is Pockit?</h2>
@@ -21,65 +21,91 @@
         </section>
 
         <section>
-            <h2>Current Functionality</h2>
+            <h2>Key Features</h2>
+
             <section>
                 <h3>1. Adding New Reminders</h3>
                 <ul>
-                    <li><strong>Simple Text Input:</strong> You can quickly add a new reminder by clicking the "Add New Reminder" button. A prompt will appear asking you to enter the description of your reminder. Simply type in what you need to be reminded of and press "OK".</li>
-                    <li><strong>Local Storage:</strong> Once added, your reminder is stored directly in your browser's local storage. This means your reminders are saved on your device and are not transmitted to any external servers.</li>
+                    <li><strong>Flexible Input:</strong> Click the "Add New Reminder" button to open a dedicated form. You can enter a reminder description, and optionally set a specific date and time. If you provide a date, please also provide a time for accurate scheduling.</li>
+                    <li><strong>Local Storage:</strong> All your reminders are stored securely and privately in your browser's local storage. They are never sent to external servers.</li>
                 </ul>
             </section>
 
             <section>
-                <h3>2. Viewing Your Reminders</h3>
+                <h3>2. Viewing & Organizing Reminders</h3>
                 <ul>
-                    <li><strong>Clear List Display:</strong> All your active reminders are displayed in a clear and chronological list under the "Your Reminders" heading.</li>
-                    <li><strong>"No reminders yet" Message:</strong> If you haven't added any reminders, or if you've deleted all of them, a friendly "No reminders yet. Add one!" message will be displayed.</li>
+                    <li><strong>Clear List Display:</strong> All your active reminders are displayed in a clear list under the "Your Reminders" heading.</li>
+                    <li><strong>Smart Sorting:</strong> Reminders with a set date and time are automatically sorted by their due date (earliest first). Reminders without a date/time appear at the end of the list.</li>
+                    <li><strong>Visual Highlighting:</strong>
+                        <ul>
+                            <li><strong>Past Reminders:</strong> If a reminder's set date and time has passed, its background will turn a muted red to indicate it's overdue.</li>
+                            <li><strong>Upcoming Reminders:</strong> Reminders due within the next 24 hours will have a muted orange/gold background, helping you prioritise with ease.</li>
+                            <li>These highlights automatically update as time passes.</li>
+                        </ul>
+                    </li>
+                    <li><strong>"No reminders yet" Message:</strong> If your list is empty, a friendly message will let you know.</li>
                 </ul>
             </section>
 
             <section>
-                <h3>3. Deleting Reminders</h3>
+                <h3>3. Editing Reminders</h3>
                 <ul>
-                    <li><strong>Individual Deletion:</strong> Each reminder in the list has a "Delete" button next to it. Clicking this button will remove that specific reminder from your list and from your browser's local storage.</li>
+                    <li><strong>Modify Details:</strong> Click the "Edit" button next to any reminder to re-open the reminder form. You can change the text, date, and time.</li>
                 </ul>
             </section>
 
             <section>
-                <h3>4. Progressive Web App (PWA) Features</h3>
+                <h3>4. Deleting Reminders</h3>
+                <ul>
+                    <li><strong>Individual Deletion:</strong> Each reminder has a "Delete" button. Clicking this will prompt a confirmation dialog to prevent accidental deletions. Confirm to remove the reminder from your list and local storage.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3>5. Progressive Web App (PWA) Features</h3>
                 <ul>
                     <li><strong>Installable:</strong> Pockit can be installed to your device's home screen or app launcher, behaving like a native application. Look for the "Install" option in your browser's menu (usually three dots or a similar icon).</li>
-                    <li><strong>Offline Access (Basic):</strong> Once you have loaded Pockit in your browser, the basic structure of the app should be accessible even if you temporarily lose your internet connection. However, adding or deleting reminders requires the app to be running in your browser.</li>
+                    <li><strong>Offline Access (Basic):</strong> Once you have loaded Pockit in your browser, the basic structure of the app should be accessible even if you temporarily lose your internet connection. However, adding, editing, or deleting reminders requires the app to be running in your browser.</li>
                 </ul>
             </section>
 
             <section>
-                <h3>5. Privacy Focused</h3>
+                <h3>6. Giving Feedback</h3>
+                <ul>
+                    <li><strong>Feature Suggestion Pop-up:</strong> Occasionally, a small pop-up may appear in the bottom right corner of your screen asking for your thoughts on new features.</li>
+                    <li>If you dismiss this pop-up, don't worry – we'll gently ask for your feedback again in about 4 weeks. </li>
+                    <li>Alternatively, you can drop us an email at <a href="mailto:support.pockit@myorchard.org?subject=Pockit%20Feature%20Suggestion&body=What%20features%20would%20make%20Pockit%20even%20better%20for%20you? ">this link here. </a></li>
+                </ul>
+            </section>
+
+            <section>
+                <h3>7. Privacy Focused</h3>
                 <ul>
                     <li><strong>Local Data Storage:</strong> All your reminder data is stored securely within your own browser's local storage. We do not collect, store, or share your personal information or your reminders on any external servers.</li>
-                    <li><strong>Privacy Policy:</strong> For more detailed information, please refer to our <a href="privacy-policy.html">Privacy Policy</a>.</li>
+                    <li><strong>Privacy Policy:</strong> For more detailed information, please refer to our <a href="privacy.html">Privacy Policy</a>.</li>
                 </ul>
             </section>
 
             <section>
                 <h2>How to Use Pockit</h2>
                 <ol>
-                    <li><strong>Access Pockit:</strong> Open your preferred web browser (Chrome, Firefox, Safari, Edge, etc.) and navigate to the Pockit web app's URL: [pockit.myorchard.org](https://pockit.myorchard.org).</li>
-                    <li><strong>Add a Reminder:</strong> Click the "Add New Reminder" button. Enter the text for your reminder in the prompt and click "OK". The reminder will appear in the list.</li>
-                    <li><strong>View Reminders:</strong> Your active reminders will be listed on the main page.</li>
-                    <li><strong>Delete a Reminder:</strong> To remove a reminder, simply click the "Delete" button next to it in the list.</li>
+                    <li><strong>Access Pockit:</strong> Open your preferred web browser (Chrome, Firefox, Safari, Edge, etc.) and navigate to the Pockit web app's URL.</li>
+                    <li><strong>Add a Reminder:</strong> Click the "Add New Reminder" button. Enter the text for your reminder, and optionally select a date and time. Click "Save Reminder".</li>
+                    <li><strong>View & Manage Reminders:</strong> Your active reminders will be listed on the main page. They will sort automatically and highlight based on their due date.</li>
+                    <li><strong>Edit a Reminder:</strong> Click the "Edit" button next to a reminder, modify its details in the form, and click "Save Reminder".</li>
+                    <li><strong>Delete a Reminder:</strong> To remove a reminder, click the "Delete" button next to it and confirm your choice.</li>
                     <li><strong>Install as an App (Optional):</strong>
                         <ul>
                             <li><strong>Chrome/Edge:</strong> Look for the "Install app" icon in the address bar (usually a plus sign in a circle) or in the browser's menu (three dots).</li>
-                            <li><strong>Firefox:</strong> Firefox will prompt you to install if you visit frequently, or you can find the "Install" option in the menu.</li>
+                            <li><strong>Firefox:</strong> Firefox may prompt you to install. Otherwise, look for the "Install" option in the menu.</li>
                             <li><strong>Safari:</strong> On macOS, you can use "Add to Dock." On iOS, use the "Share" button and then "Add to Home Screen."</li>
                         </ul>
                     </li>
                 </ol>
             </section>
-        </section>
     </main>
 
+    <script src="back.js"></script>
     <footer>
         <p>&copy; 2025 Pockit • <a href="privacy.html">Privacy Policy</a></p>
     </footer>
