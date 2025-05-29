@@ -92,6 +92,21 @@ button:hover {
     padding: 0;
 }
 
+/* Ensure padding is consistent despite border-left */
+#reminders li {
+    border: 1px solid #444; /* Darker border */
+    border-radius: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    color: #e0e0e0; /* Lighter text for list items */
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: 3a3a3a; /* Darker background for list items */
+    transition: background-color 0.3s ease, border-color 0.3s ease, opacity 0.3s ease; /* Smooth transition for hover effects */
+}
 
 /* --- Reminder Highlight Colors --- */
 .past-reminder {
@@ -107,18 +122,31 @@ button:hover {
     color: #e0e0e0; /* Ensure text remains light and readable */
 }
 
-/* Ensure padding is consistent despite border-left */
-#reminders li {
-    border: 1px solid #444; /* Darker border */
-    border-radius: 5px;
-    margin-bottom: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    color: #e0e0e0; /* Lighter text for list items */
-    padding-left: 10px;
-    padding-right: 10px;
+/* --- Completed Reminder Styling --- */
+/* This must come AFTER highlight styles to override them when completed */
+.completed-reminder {
+    /* text-decoration: line-through;  */
+    opacity: 0.8;
+    background-color: #333 !important;
+    border-left: 5px solid #666 !important;
+}
+
+/* Ensure completed items get their own text color */
+.completed-reminder .reminder-text {
+    color: #ebebeb !important; /* Lighter grey for the struck-through text */
+    text-decoration: line-through !important; /* Apply strikethrough to text here */
+}
+
+.completed-reminder .reminder-datetime {
+    color: #b0b0b0 !important; /* Lighter grey for datetime */
+    text-decoration: none !important; /* IMPORTANT: Prevent strikethrough for datetime */
+}
+
+/* IMPORTANT: Prevent strikethrough for buttons within a completed reminder */
+.completed-reminder .reminder-actions button {
+    text-decoration: none !important; /* Ensure buttons are NOT struck through */
+    opacity: 1 !important; /* Keep buttons fully opaque to be clearly clickable */
+    color: #fff !important; /* Ensure their text color is bright, not dimmed */
 }
 
 .reminder-details {
@@ -137,6 +165,112 @@ button:hover {
     color: #ebd8d8; /* Slightly darker light text for date/time */
 }
 
+/* --- General Button Styling within Reminders (for consistency) --- */
+.reminder-actions {
+    display: flex;
+    gap: 8px; /* Space between buttons */
+    align-items: center;
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+    margin-top: 5px; /* Add a little space if they wrap */
+}
+
+.reminder-actions .action-button { /* Generic class for all action buttons */
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    border: none;
+    transition: background-color 0.3s ease;
+    min-width: 70px; /* Give buttons a consistent minimum width */
+}
+
+.reminder-actions .edit-button {
+    background-color: #013b78; /* Blue for edit */
+    color: #fff;
+}
+
+.reminder-actions .edit-button:hover {
+    background-color: #0056b3;
+}
+
+.reminder-actions .delete-button {
+    background-color: #89000e; /* Red for delete */
+    color: #fff;
+}
+
+.reminder-actions .delete-button:hover {
+    background-color: #c82333;
+}
+
+/* --- Completion Button Styling --- */
+.reminder-actions .complete-button {
+    background-color: #005414; /* Green for "Complete" */
+    color: #fff;
+}
+
+.reminder-actions .complete-button:hover {
+    background-color: #218838;
+}
+
+/* --- Undo Complete Pop-up Styling --- */
+.undo-complete-popup {
+    display: none; /* Controlled by JS, but starts hidden */
+    position: fixed;
+    bottom: 20px;
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%) translateY(20px); /* Start slightly below, centered */
+    background-color: #2c2c2c; /* Darker background for this popup */
+    color: #e0e0e0;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    z-index: 1001; /* Higher than feedback popup */
+    opacity: 0;
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out; /* Smooth show/hide */
+    white-space: nowrap; /* Prevent text wrapping */
+    display: flex; /* Use flexbox for content alignment */
+    align-items: center; /* Vertically align text and button */
+    gap: 15px; /* Space between text and button */
+}
+
+.undo-complete-popup.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0); /* Slide up while centered */
+}
+
+.undo-complete-popup p {
+    margin: 0; /* Remove default margin */
+    font-size: 0.95rem;
+}
+
+.undo-complete-popup button {
+    padding: 6px 15px;
+    margin: 0;
+    background-color: #007bff; /* Blue for undo button */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+
+.undo-complete-popup button:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive adjustment for small screens */
+@media (max-width: 600px) {
+    .undo-complete-popup {
+        width: calc(100% - 40px); /* Take up more width on small screens */
+        left: 20px; /* Position from left */
+        transform: translateX(0) translateY(20px); /* No longer needs translateX(-50%) */
+    }
+    .undo-complete-popup.show {
+        transform: translateX(0) translateY(0);
+    }
+}
+
 .reminder-actions button {
     /* These inherit from the global button style initially for shared properties */
     color: #fff;
@@ -152,14 +286,14 @@ button:hover {
 }
 
 .reminder-actions .edit-button {
-    background-color: #007bff; /* Blue for Edit */
+    background-color: #013b78; /* Blue for Edit */
 }
 .reminder-actions .edit-button:hover {
     background-color: #0056b3;
 }
 
 .reminder-actions .delete-button {
-    background-color: #dc3545; /* Red for Delete */
+    background-color: #89000e; /* Red for Delete */
 }
 
 .reminder-actions .delete-button:hover {

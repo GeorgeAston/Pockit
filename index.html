@@ -47,6 +47,16 @@
         </section>
     </main>
 
+    <!-- Pop-up to show `reminder` completed -->
+    <div id="undo-complete-popup" class="undo-complete-popup">
+        <p><span id="undo-reminder-text"></span> marked as completed.</p>
+        <div class="undo-complete-actions">
+            <button id="undo-button">Undo</button>
+        </div>
+    </div>
+
+    <!-- Pop-up to show a prompt for feedback on feature requests -->
+    <!-- If the user clicks no, they will be prompted again in 4 weeks from the time they dismissed. -->
     <div id="feedback-popup" class="feedback-popup">
         <p>What features would make Pockit even better for you?</p>
         <div class="feedback-popup-actions">
