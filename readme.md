@@ -1,5 +1,11 @@
 # Pockit - Your Simple Pocket Reminder
 
+>[!WARNING]
+>### Your Attention Please: 
+>This file is currently outdated - an update will be provided soon.
+>
+>We sincerely apologise for the inconvenience. The [/help](/help.html) file is the most up-to-date version alternative to this README file. 
+
 >[!NOTE]
 This file is no longer shown on the website, as it has been replaced with [/help](/help.html), but this file is still available to view on GitHub, and manually using the link: [/readme.md (this file)](/readme.md). 
 
