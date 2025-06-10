@@ -19,7 +19,7 @@
     <main>
         <button id="show-add-reminder-modal"><strong>Add New Reminder</strong></button>
         
-        <div id="add-reminder-modal" class="modal" style="display:none;">
+        <div id="add-reminder-modal" class="modal">
             <div class="modal-content">
                 <span class="close-button">&times;</span>
                 <h2>Add/Edit Reminder</h2>
@@ -33,6 +33,10 @@
                     <label for="reminder-time">Time:</label>
                     <input type="time" id="reminder-time" name="reminder-time"><br><br>
 
+                    <label for="reminder-tag">Tag (optional):</label>
+                    <input type="text" id="reminder-tag" list="tags">
+                    <datalist id="tags"></datalist><br><br>
+
                     <button type="submit">Save Reminder</button>
                     <button type="button" id="cancel-reminder">Cancel</button>
                 </form>
@@ -41,6 +45,11 @@
 
         <section id="reminder-list">
             <h1>Your Reminders</h1>
+
+            <div id="tag-filters">
+                
+            </div>
+
             <ul id="reminders">
                 </ul>
             <p id="empty-list-message" style="display:none;">No reminders yet. Add one!</p>

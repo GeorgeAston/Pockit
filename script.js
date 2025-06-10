@@ -7,11 +7,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const reminderText = document.getElementById('reminder-text');
     const reminderDate = document.getElementById('reminder-date');
     const reminderTime = document.getElementById('reminder-time');
+    const reminderTagInput = document.getElementById('reminder-tag'); // NEW
+    const availableTagsDatalist = document.getElementById('tags'); // NEW
     const reminderIdHidden = document.getElementById('reminder-id-hidden');
     const cancelReminderButton = document.getElementById('cancel-reminder');
 
     const remindersList = document.getElementById('reminders');
     const emptyListMessage = document.getElementById('empty-list-message');
+    const tagFiltersContainer = document.getElementById('tag-filters'); // NEW
 
     // Undo Pop-up Elements
     const undoCompletePopup = document.getElementById('undo-complete-popup');
@@ -21,8 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const remindersKey = 'pockitReminders';
 
+    // --- NEW: Current Filter Tag ---
+    let currentFilterTag = 'all'; // Default filter
+
     // --- Initial Load ---
     loadAndRenderReminders();
+    renderTagFilters(); // NEW: Render tag filters on initial load
     // Re-render reminders every minute to update highlights
     setInterval(loadAndRenderReminders, 60 * 1000);
 
@@ -32,51 +39,60 @@ document.addEventListener('DOMContentLoaded', () => {
     showAddReminderModalButton.addEventListener('click', () => {
         reminderForm.reset();
         reminderIdHidden.value = '';
-        // Clear date and time by default for optional input
         reminderDate.value = '';
         reminderTime.value = '';
-        addReminderModal.style.display = 'block';
-        reminderText.focus(); // Focus on the text input for immediate typing
+        reminderTagInput.value = '';
+        populateAvailableTagsDatalist();
+        // CHANGED: Use classList.add() to show the modal
+        console.log('GO FUCK YOURSELF');
+        addReminderModal.classList.add('show'); // This will apply display: flex; and opacity: 1;
+        reminderText.focus();
     });
 
-    // Close modal via 'x' button or 'Cancel'
+    // Close modal via 'x' button
     closeModalButton.addEventListener('click', () => {
-        addReminderModal.style.display = 'none';
+        // CHANGED: Use classList.remove() to hide the modal
+        addReminderModal.classList.remove('show');
     });
 
+    // Close modal via 'Cancel' button
     cancelReminderButton.addEventListener('click', () => {
-        addReminderModal.style.display = 'none';
+        // CHANGED: Use classList.remove() to hide the modal
+        addReminderModal.classList.remove('show');
     });
 
     // Close modal if clicking outside the content
-    window.addEventListener('click', (event) => {
+    /*window.addEventListener('click', (event) => {
         if (event.target === addReminderModal) {
-            addReminderModal.style.display = 'none';
+            // CHANGED: Use classList.remove() to hide the modal
+            addReminderModal.classList.remove('show');
         }
-    });
+    });*/
 
     // Handle form submission (Add or Edit Reminder)
     reminderForm.addEventListener('submit', (event) => {
         event.preventDefault();
 
-        const id = reminderIdHidden.value || Date.now().toString(); // Use existing ID or generate new
+        const id = reminderIdHidden.value || Date.now().toString();
         const text = reminderText.value.trim();
-        const date = reminderDate.value; // Can be empty
-        const time = reminderTime.value; // Can be empty
+        const date = reminderDate.value;
+        const time = reminderTime.value;
+        const tag = reminderTagInput.value.trim().toLowerCase() || 'all'; // NEW: Get tag, default to 'all'
 
         if (!text) {
             alert('Reminder text is required!');
             return;
         }
 
-        // If date is provided, time should ideally be too, and vice versa
         if ((date && !time) || (!date && time)) {
             alert('Please provide both date AND time, or neither.');
             return;
         }
 
-        saveOrUpdateReminder(id, text, date, time);
-        addReminderModal.style.display = 'none';
+        saveOrUpdateReminder(id, text, date, time, tag); // NEW: Pass tag
+        // CHANGED: Use classList.remove() to hide the modal
+        addReminderModal.classList.remove('show'); // CHANGED: Use classList.remove() to hide the modal
+        reminderForm.reset(); // Reset form fields after submission
     });
 
     // Handle clicks within the reminders list (for Delete/Edit/Complete)
@@ -90,7 +106,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target.classList.contains('delete-button')) {
             if (confirm('Are you sure you want to delete this reminder?')) {
                 deleteReminder(reminderId);
-                loadAndRenderReminders(); // Re-render to update the list
+                loadAndRenderReminders();
+                renderTagFilters(); // NEW: Re-render tag filters after deletion
             }
         }
         // --- Edit Reminder ---
@@ -101,9 +118,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (reminderToEdit) {
                 reminderIdHidden.value = reminderToEdit.id;
                 reminderText.value = reminderToEdit.text;
-                reminderDate.value = reminderToEdit.date || ''; // Ensure empty string if not set
-                reminderTime.value = reminderToEdit.time || ''; // Ensure empty string if not set
-                addReminderModal.style.display = 'block';
+                reminderDate.value = reminderToEdit.date || '';
+                reminderTime.value = reminderToEdit.time || '';
+                reminderTagInput.value = reminderToEdit.tag || 'all'; // NEW: Set tag value
+                populateAvailableTagsDatalist(); // NEW: Populate datalist for editing
+                addReminderModal.classList.add('show'); // CHANGED: Use classList.add() to show the modal
                 reminderText.focus();
             }
         }
@@ -116,23 +135,52 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listener for Undo button in the popup
     undoButton.addEventListener('click', () => {
         if (lastCompletedReminderId) {
-            toggleCompletion(lastCompletedReminderId); // Toggle it back
+            toggleCompletion(lastCompletedReminderId);
             hideUndoPopup();
         }
     });
 
+    // --- NEW: Event Listener for Tag Filters ---
+    tagFiltersContainer.addEventListener('click', (event) => {
+        if (event.target.classList.contains('tag-filter-button')) {
+            currentFilterTag = event.target.dataset.tag;
+            loadAndRenderReminders(); // Re-render reminders with new filter
+            renderTagFilters(); // Update active state of tag buttons
+        }
+    });
 
     // --- Core Functions ---
 
-    // Loads reminders from localStorage, sorts them, and renders them to the DOM
     function loadAndRenderReminders() {
         const storedReminders = localStorage.getItem(remindersKey);
         let reminders = storedReminders ? JSON.parse(storedReminders) : [];
 
+        // --- Backward Compatibility for Tags (CRUCIAL) ---
+        // Ensure all loaded reminders have a 'tag' property, defaulting to 'all'
+        reminders = reminders.map(reminder => {
+            if (typeof reminder.tag === 'undefined' || reminder.tag === null || reminder.tag.trim() === '') {
+                reminder.tag = 'all'; // Assign 'all' if tag is missing, null, or empty
+            } else {
+                reminder.tag = reminder.tag.toLowerCase(); // Ensure tags are always lowercase
+            }
+            // Also ensure 'completed' property exists for older reminders
+            if (typeof reminder.completed === 'undefined') {
+                reminder.completed = false;
+            }
+            return reminder;
+        });
+        saveReminders(reminders); // Save back to localStorage to update old reminders with 'all' tag
+
+        // --- Filtering Reminders ---
+        const filteredReminders = currentFilterTag === 'all'
+            ? reminders
+            : reminders.filter(r => r.tag === currentFilterTag);
+
+
         // Sort reminders:
         // 1. Incomplete reminders first, sorted by date/time (earliest first)
         // 2. Then completed reminders, sorted by date/time (or creation time if no date/time)
-        reminders.sort((a, b) => {
+        filteredReminders.sort((a, b) => { // Use filteredReminders for sorting
             // Completed items always go to the bottom
             if (a.completed && !b.completed) return 1;
             if (!a.completed && b.completed) return -1;
@@ -155,17 +203,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         remindersList.innerHTML = ''; // Clear current list before re-rendering
-        reminders.forEach(reminder => {
+        filteredReminders.forEach(reminder => { // Use filteredReminders for rendering
             addReminderToDOM(reminder);
         });
         updateEmptyListVisibility();
     }
 
 
-    function saveOrUpdateReminder(id, text, date, time) {
-        // Ensure date and time are stored as empty strings if not provided
+    function saveOrUpdateReminder(id, text, date, time, tag) { // NEW: added tag parameter
         let reminders = JSON.parse(localStorage.getItem(remindersKey)) || [];
         const existingIndex = reminders.findIndex(r => r.id === id);
+
+        const processedTag = tag.trim().toLowerCase() || 'all'; // Ensure new/updated tags are lowercase and not empty
 
         if (existingIndex > -1) {
             // Update existing reminder, preserve 'completed' status
@@ -173,38 +222,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 ...reminders[existingIndex], // Keep existing properties like 'completed'
                 text,
                 date: date || '',
-                time: time || ''
+                time: time || '',
+                tag: processedTag // NEW: Save tag
             };
         } else {
             // Add new reminder, default to not completed
-            const newReminder = { id, text, date: date || '', time: time || '', completed: false };
+            const newReminder = { id, text, date: date || '', time: time || '', completed: false, tag: processedTag }; // NEW: Add tag
             reminders.push(newReminder);
         }
 
         saveReminders(reminders);
-        loadAndRenderReminders(); // Re-render to ensure correct sorting and highlighting
+        loadAndRenderReminders();
+        renderTagFilters(); // NEW: Re-render tag filters after saving
     }
 
-    // New function to toggle completion status
     function toggleCompletion(id) {
         let reminders = JSON.parse(localStorage.getItem(remindersKey)) || [];
         const reminderIndex = reminders.findIndex(r => r.id === id);
 
         if (reminderIndex > -1) {
             const currentReminder = reminders[reminderIndex];
-            currentReminder.completed = !currentReminder.completed; // Toggle the status
+            currentReminder.completed = !currentReminder.completed;
 
             saveReminders(reminders);
-            loadAndRenderReminders(); // Re-render to update visual state and sorting
+            loadAndRenderReminders();
 
-            // If marked as completed, show undo popup
             if (currentReminder.completed) {
-                lastCompletedReminderId = currentReminder.id; // Store for potential undo
+                lastCompletedReminderId = currentReminder.id;
                 showUndoPopup(currentReminder.text);
             } else {
-                hideUndoPopup(); // Hide if unmarked as completed
+                hideUndoPopup();
             }
         }
+    }
+
+    function deleteReminder(idToDelete) {
+        let reminders = JSON.parse(localStorage.getItem(remindersKey)) || [];
+        reminders = reminders.filter(reminder => reminder.id !== idToDelete);
+        saveReminders(reminders);
     }
 
 
@@ -216,7 +271,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const listItem = document.createElement('li');
         listItem.dataset.reminderId = reminder.id;
 
-        // Add 'completed-reminder' class if applicable
         if (reminder.completed) {
             listItem.classList.add('completed-reminder');
         }
@@ -228,14 +282,11 @@ document.addEventListener('DOMContentLoaded', () => {
         reminderTextSpan.textContent = reminder.text;
         reminderTextSpan.classList.add('reminder-text');
 
-        // Append text to details
         reminderDetails.appendChild(reminderTextSpan);
 
-        // Only add date/time span if date is provided
         if (reminder.date) {
             const reminderDateTimeSpan = document.createElement('span');
             const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
-            // Use current date if reminder time is missing to form a valid Date object for display
             const displayDateString = reminder.time ? `${reminder.date}T${reminder.time}` : `${reminder.date}T00:00`;
             const displayDate = new Date(displayDateString).toLocaleString(undefined, options);
             reminderDateTimeSpan.textContent = ` (${displayDate})`;
@@ -243,14 +294,22 @@ document.addEventListener('DOMContentLoaded', () => {
             reminderDetails.appendChild(reminderDateTimeSpan);
         }
 
+        // --- NEW: Display Reminder Tag ---
+        if (reminder.tag && reminder.tag !== 'all') { // Only display if tag exists and is not 'all'
+            const reminderTagSpan = document.createElement('span');
+            reminderTagSpan.textContent = reminder.tag;
+            reminderTagSpan.classList.add('reminder-tag');
+            reminderDetails.appendChild(reminderTagSpan);
+        }
+
+
         const actionsDiv = document.createElement('div');
         actionsDiv.classList.add('reminder-actions');
 
-        // Mark Complete Button
         const completeButton = document.createElement('button');
         completeButton.textContent = reminder.completed ? 'Undo' : 'Complete';
         completeButton.classList.add('complete-button');
-        completeButton.classList.add('action-button'); // Add a generic action button class if needed for shared styling
+        completeButton.classList.add('action-button');
 
         const editButton = document.createElement('button');
         editButton.textContent = 'Edit';
@@ -278,20 +337,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (reminderDateTime < now) {
                 listItem.classList.add('past-reminder');
             } else if (reminderDateTime > now && reminderDateTime.getTime() - now.getTime() < 24 * 60 * 60 * 1000) {
-                // Highlight as upcoming if within next 24 hours
                 listItem.classList.add('upcoming-reminder');
             }
         }
-        // If no date/time, no specific highlight class added
-        // If completed, 'completed-reminder' takes precedence due to !important in CSS
 
         remindersList.appendChild(listItem);
-    }
-
-    function deleteReminder(idToDelete) {
-        let reminders = JSON.parse(localStorage.getItem(remindersKey)) || [];
-        reminders = reminders.filter(reminder => reminder.id !== idToDelete);
-        saveReminders(reminders);
     }
 
     function updateEmptyListVisibility() {
@@ -302,84 +352,121 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- NEW: Tag Management Functions ---
+    function getUniqueTags() {
+        const reminders = JSON.parse(localStorage.getItem(remindersKey)) || [];
+        // Ensure all reminders have a tag before collecting unique ones
+        const processedReminders = reminders.map(r => {
+            if (typeof r.tag === 'undefined' || r.tag === null || r.tag.trim() === '') {
+                r.tag = 'all';
+            } else {
+                r.tag = r.tag.toLowerCase(); // Ensure tags are lowercase
+            }
+            return r;
+        });
+
+        const tags = new Set(['all']); // Start with 'all' as a default tag
+        processedReminders.forEach(reminder => {
+            if (reminder.tag) {
+                tags.add(reminder.tag);
+            }
+        });
+        return Array.from(tags).sort(); // Convert Set to Array and sort alphabetically
+    }
+
+    function renderTagFilters() {
+        const uniqueTags = getUniqueTags();
+        tagFiltersContainer.innerHTML = ''; // Clear existing buttons
+
+        uniqueTags.forEach(tag => {
+            const button = document.createElement('button');
+            button.classList.add('tag-filter-button');
+            button.textContent = tag.charAt(0).toUpperCase() + tag.slice(1); // Capitalize first letter for display
+            button.dataset.tag = tag; // Store raw tag in dataset for filtering
+            if (tag === currentFilterTag) {
+                button.classList.add('active');
+            }
+            tagFiltersContainer.appendChild(button);
+        });
+    }
+
+    function populateAvailableTagsDatalist() {
+        const uniqueTags = getUniqueTags();
+        availableTagsDatalist.innerHTML = '';
+        uniqueTags.forEach(tag => {
+            if (tag !== 'all') { // Don't suggest 'all' in the input datalist
+                const option = document.createElement('option');
+                option.value = tag.charAt(0).toUpperCase() + tag.slice(1); // Capitalize for display
+                availableTagsDatalist.appendChild(option);
+            }
+        });
+    }
+
+
     // --- Undo Complete Pop-up Logic ---
     let undoPopupTimeout;
 
     function showUndoPopup(reminderText) {
-        undoReminderTextSpan.textContent = `"${reminderText}"`; // Set the reminder text in the popup
-        undoCompletePopup.style.display = 'flex'; // Use flexbox for easy centering of content
-        // Small delay to trigger CSS transition
+        undoReminderTextSpan.textContent = `"${reminderText}"`;
+        undoCompletePopup.style.display = 'flex';
         setTimeout(() => {
             undoCompletePopup.classList.add('show');
         }, 50);
 
-        // Clear any existing timeout to prevent multiple popups or early hiding
         clearTimeout(undoPopupTimeout);
-        undoPopupTimeout = setTimeout(hideUndoPopup, 10000); // Hide after 10 seconds
+        undoPopupTimeout = setTimeout(hideUndoPopup, 10000);
     }
 
     function hideUndoPopup() {
         undoCompletePopup.classList.remove('show');
         setTimeout(() => {
             undoCompletePopup.style.display = 'none';
-            lastCompletedReminderId = null; // Clear the stored ID
-        }, 500); // Matches CSS transition duration
+            lastCompletedReminderId = null;
+        }, 500);
     }
 
 
     // --- Feedback Pop-up Logic ---
     const feedbackPopup = document.getElementById('feedback-popup');
     const dismissFeedbackButton = document.querySelector('.feedback-dismiss-button');
-    const feedbackLastDismissedKey = 'pockitFeedbackLastDismissed'; // Key to store timestamp
-    const FOUR_WEEKS_IN_MS = 4 * 7 * 24 * 60 * 60 * 1000; // 4 weeks in milliseconds
+    const feedbackLastDismissedKey = 'pockitFeedbackLastDismissed';
+    const FOUR_WEEKS_IN_MS = 4 * 7 * 24 * 60 * 60 * 1000;
 
-    // Function to show the feedback popup
     function showFeedbackPopup() {
         const lastDismissed = localStorage.getItem(feedbackLastDismissedKey);
         const now = Date.now();
 
-        // Only show if never dismissed, or if 4 weeks have passed since last dismissal
         if (!lastDismissed || (now - parseInt(lastDismissed) > FOUR_WEEKS_IN_MS)) {
-            feedbackPopup.style.display = 'block'; // Ensure it's 'display: block' for transitions
-            // Trigger transition after a short delay
+            feedbackPopup.style.display = 'block';
             setTimeout(() => {
                 feedbackPopup.classList.add('show');
             }, 50);
         } else {
-            // Ensure it's hidden if conditions are not met
             feedbackPopup.style.display = 'none';
-            feedbackPopup.classList.remove('show'); // Just in case
+            feedbackPopup.classList.remove('show');
         }
     }
 
-    // Function to hide and mark as dismissed (with timestamp)
     function dismissFeedbackPopup() {
-        // Temporarily change the text to show the "ask again" message
         const originalParagraph = feedbackPopup.querySelector('p');
-        const originalText = originalParagraph.textContent; // Store original text
-        const originalActions = feedbackPopup.querySelector('.feedback-popup-actions'); // Store original actions div
+        const originalText = originalParagraph.textContent;
+        const originalActions = feedbackPopup.querySelector('.feedback-popup-actions');
 
         originalParagraph.textContent = "Okay, we'll ask again in 4 weeks. Thanks!";
-        originalActions.style.display = 'none'; // Hide buttons immediately
+        originalActions.style.display = 'none';
 
-        // Keep the 'show' class for 5 seconds, then remove it
         setTimeout(() => {
-            feedbackPopup.classList.remove('show'); // Start fade-out animation
-            // After fade-out, restore content and truly hide
+            feedbackPopup.classList.remove('show');
             setTimeout(() => {
-                originalParagraph.textContent = originalText; // Restore original text
-                originalActions.style.display = 'flex'; // Restore buttons
-                feedbackPopup.style.display = 'none'; // Finally hide it
-            }, 300); // This should match your CSS transition duration (0.3s)
-        }, 5000); // This is the delay for displaying the "Okay, we'll ask again..." message
+                originalParagraph.textContent = originalText;
+                originalActions.style.display = 'flex';
+                feedbackPopup.style.display = 'none';
+            }, 300);
+        }, 5000);
 
-        // Store current timestamp
         localStorage.setItem(feedbackLastDismissedKey, Date.now().toString());
     }
 
-    // Event listener for dismiss button
     dismissFeedbackButton.addEventListener('click', dismissFeedbackPopup);
-
-    // Show the feedback popup after a delay (e.g., 5 seconds)
-    setTimeout(showFeedbackPopup, 5000); // 5000ms = 5 seconds
+    setTimeout(showFeedbackPopup, 5000);
 });
