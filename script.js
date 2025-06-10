@@ -7,31 +7,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const reminderText = document.getElementById('reminder-text');
     const reminderDate = document.getElementById('reminder-date');
     const reminderTime = document.getElementById('reminder-time');
-    const reminderTagInput = document.getElementById('reminder-tag'); // NEW
-    const availableTagsDatalist = document.getElementById('tags'); // NEW
+    const reminderTagInput = document.getElementById('reminder-tag');
+    const availableTagsDatalist = document.getElementById('tags'); // Corrected ID: 'tags'
     const reminderIdHidden = document.getElementById('reminder-id-hidden');
     const cancelReminderButton = document.getElementById('cancel-reminder');
 
     const remindersList = document.getElementById('reminders');
     const emptyListMessage = document.getElementById('empty-list-message');
-    const tagFiltersContainer = document.getElementById('tag-filters'); // NEW
+
+    const searchInput = document.getElementById('search-reminders');
+
+    // NEW Tag Filter Dropdown Elements
+    const tagFilterToggle = document.getElementById('tag-filter-toggle');
+    const tagFilterMenu = document.getElementById('tag-filter-menu');
 
     // Undo Pop-up Elements
     const undoCompletePopup = document.getElementById('undo-complete-popup');
     const undoReminderTextSpan = document.getElementById('undo-reminder-text');
     const undoButton = document.getElementById('undo-button');
-    let lastCompletedReminderId = null; // Store ID for undo functionality
+    let lastCompletedReminderId = null;
 
     const remindersKey = 'pockitReminders';
 
-    // --- NEW: Current Filter Tag ---
-    let currentFilterTag = 'all'; // Default filter
+    // --- State Variables ---
+    // NEW: Use an array for selected tags (initially includes 'all')
+    let selectedTags = ['all'];
+    let currentSearchTerm = '';
+
 
     // --- Initial Load ---
     loadAndRenderReminders();
-    renderTagFilters(); // NEW: Render tag filters on initial load
-    // Re-render reminders every minute to update highlights
-    setInterval(loadAndRenderReminders, 60 * 1000);
+    renderTagCheckboxes(); // NEW: Render checkboxes for the dropdown
+    setInterval(loadAndRenderReminders, 60 * 1000); // Re-render reminders every minute
 
     // --- Event Listeners ---
 
@@ -43,31 +50,31 @@ document.addEventListener('DOMContentLoaded', () => {
         reminderTime.value = '';
         reminderTagInput.value = '';
         populateAvailableTagsDatalist();
-        // CHANGED: Use classList.add() to show the modal
-        console.log('GO FUCK YOURSELF');
-        addReminderModal.classList.add('show'); // This will apply display: flex; and opacity: 1;
+        addReminderModal.classList.add('show');
         reminderText.focus();
     });
 
     // Close modal via 'x' button
     closeModalButton.addEventListener('click', () => {
-        // CHANGED: Use classList.remove() to hide the modal
         addReminderModal.classList.remove('show');
     });
 
     // Close modal via 'Cancel' button
     cancelReminderButton.addEventListener('click', () => {
-        // CHANGED: Use classList.remove() to hide the modal
         addReminderModal.classList.remove('show');
     });
 
     // Close modal if clicking outside the content
-    /*window.addEventListener('click', (event) => {
+    window.addEventListener('click', (event) => {
         if (event.target === addReminderModal) {
-            // CHANGED: Use classList.remove() to hide the modal
             addReminderModal.classList.remove('show');
         }
-    });*/
+        // NEW: Close tag filter menu if click outside it
+        if (!tagFilterMenu.contains(event.target) && event.target !== tagFilterToggle) {
+            tagFilterMenu.classList.remove('tag-filter-menu-show');
+            tagFilterToggle.classList.remove('active');
+        }
+    });
 
     // Handle form submission (Add or Edit Reminder)
     reminderForm.addEventListener('submit', (event) => {
@@ -77,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const text = reminderText.value.trim();
         const date = reminderDate.value;
         const time = reminderTime.value;
-        const tag = reminderTagInput.value.trim().toLowerCase() || 'all'; // NEW: Get tag, default to 'all'
+        const tag = reminderTagInput.value.trim().toLowerCase() || 'all';
 
         if (!text) {
             alert('Reminder text is required!');
@@ -89,10 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        saveOrUpdateReminder(id, text, date, time, tag); // NEW: Pass tag
-        // CHANGED: Use classList.remove() to hide the modal
-        addReminderModal.classList.remove('show'); // CHANGED: Use classList.remove() to hide the modal
-        reminderForm.reset(); // Reset form fields after submission
+        saveOrUpdateReminder(id, text, date, time, tag);
+        addReminderModal.classList.remove('show'); // Hide modal after save
     });
 
     // Handle clicks within the reminders list (for Delete/Edit/Complete)
@@ -107,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (confirm('Are you sure you want to delete this reminder?')) {
                 deleteReminder(reminderId);
                 loadAndRenderReminders();
-                renderTagFilters(); // NEW: Re-render tag filters after deletion
+                renderTagCheckboxes(); // NEW: Re-render checkboxes after deletion
             }
         }
         // --- Edit Reminder ---
@@ -120,9 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 reminderText.value = reminderToEdit.text;
                 reminderDate.value = reminderToEdit.date || '';
                 reminderTime.value = reminderToEdit.time || '';
-                reminderTagInput.value = reminderToEdit.tag || 'all'; // NEW: Set tag value
-                populateAvailableTagsDatalist(); // NEW: Populate datalist for editing
-                addReminderModal.classList.add('show'); // CHANGED: Use classList.add() to show the modal
+                reminderTagInput.value = reminderToEdit.tag || 'all';
+                populateAvailableTagsDatalist();
+                addReminderModal.classList.add('show'); // Show modal for edit
                 reminderText.focus();
             }
         }
@@ -140,14 +145,51 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- NEW: Event Listener for Tag Filters ---
-    tagFiltersContainer.addEventListener('click', (event) => {
-        if (event.target.classList.contains('tag-filter-button')) {
-            currentFilterTag = event.target.dataset.tag;
+    // NEW: Event Listener for Tag Filter Toggle Button
+    tagFilterToggle.addEventListener('click', () => {
+        tagFilterMenu.classList.toggle('tag-filter-menu-show');
+        tagFilterToggle.classList.toggle('active');
+        // Re-render checkboxes just in case new tags were added since last open
+        renderTagCheckboxes();
+    });
+
+    // NEW: Event Listener for Tag Checkbox Changes
+    tagFilterMenu.addEventListener('change', (event) => {
+        if (event.target.type === 'checkbox' && event.target.dataset.tag) {
+            const clickedTag = event.target.dataset.tag;
+
+            if (clickedTag === 'all') {
+                // If 'all' is clicked, clear others and select only 'all'
+                selectedTags = ['all'];
+            } else {
+                // If any other tag is clicked, remove 'all' if it's there
+                selectedTags = selectedTags.filter(tag => tag !== 'all');
+
+                if (event.target.checked) {
+                    selectedTags.push(clickedTag);
+                } else {
+                    selectedTags = selectedTags.filter(tag => tag !== clickedTag);
+                }
+
+                // If no tags are selected, default back to 'all'
+                if (selectedTags.length === 0) {
+                    selectedTags.push('all');
+                }
+            }
+
+            // Re-render checkboxes to update their checked state based on selectedTags
+            // (e.g., if 'all' was clicked, other checkboxes need to become unchecked)
+            renderTagCheckboxes();
             loadAndRenderReminders(); // Re-render reminders with new filter
-            renderTagFilters(); // Update active state of tag buttons
         }
     });
+
+    // Event Listener for Search Input
+    searchInput.addEventListener('input', (event) => {
+        currentSearchTerm = event.target.value.trim().toLowerCase();
+        loadAndRenderReminders();
+    });
+
 
     // --- Core Functions ---
 
@@ -155,37 +197,41 @@ document.addEventListener('DOMContentLoaded', () => {
         const storedReminders = localStorage.getItem(remindersKey);
         let reminders = storedReminders ? JSON.parse(storedReminders) : [];
 
-        // --- Backward Compatibility for Tags (CRUCIAL) ---
-        // Ensure all loaded reminders have a 'tag' property, defaulting to 'all'
+        // --- Backward Compatibility for Tags ---
         reminders = reminders.map(reminder => {
             if (typeof reminder.tag === 'undefined' || reminder.tag === null || reminder.tag.trim() === '') {
-                reminder.tag = 'all'; // Assign 'all' if tag is missing, null, or empty
+                reminder.tag = 'all';
             } else {
-                reminder.tag = reminder.tag.toLowerCase(); // Ensure tags are always lowercase
+                reminder.tag = reminder.tag.toLowerCase();
             }
-            // Also ensure 'completed' property exists for older reminders
             if (typeof reminder.completed === 'undefined') {
                 reminder.completed = false;
             }
             return reminder;
         });
-        saveReminders(reminders); // Save back to localStorage to update old reminders with 'all' tag
+        saveReminders(reminders);
 
-        // --- Filtering Reminders ---
-        const filteredReminders = currentFilterTag === 'all'
-            ? reminders
-            : reminders.filter(r => r.tag === currentFilterTag);
+        // --- Filtering Reminders (Tags then Search) ---
+        let filteredReminders = reminders;
 
+        // 1. Filter by Tag(s)
+        if (!selectedTags.includes('all')) { // Only filter if 'all' is NOT selected
+            filteredReminders = filteredReminders.filter(r => selectedTags.includes(r.tag));
+        }
 
-        // Sort reminders:
-        // 1. Incomplete reminders first, sorted by date/time (earliest first)
-        // 2. Then completed reminders, sorted by date/time (or creation time if no date/time)
-        filteredReminders.sort((a, b) => { // Use filteredReminders for sorting
-            // Completed items always go to the bottom
+        // 2. Filter by Search Term (case-insensitive)
+        if (currentSearchTerm) {
+            filteredReminders = filteredReminders.filter(r =>
+                r.text.toLowerCase().includes(currentSearchTerm) ||
+                r.tag.toLowerCase().includes(currentSearchTerm)
+            );
+        }
+
+        // Sort reminders
+        filteredReminders.sort((a, b) => {
             if (a.completed && !b.completed) return 1;
             if (!a.completed && b.completed) return -1;
 
-            // If both are completed or both are not completed, sort by date/time
             const hasDateTimeA = a.date && a.time;
             const hasDateTimeB = b.date && b.time;
 
@@ -197,43 +243,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 const dateTimeB = new Date(`${b.date}T${b.time}`);
                 return dateTimeA - dateTimeB;
             } else {
-                // If neither has date/time (or both completed without date/time), sort by ID (creation time)
                 return parseInt(a.id) - parseInt(b.id);
             }
         });
 
-        remindersList.innerHTML = ''; // Clear current list before re-rendering
-        filteredReminders.forEach(reminder => { // Use filteredReminders for rendering
+        remindersList.innerHTML = '';
+        filteredReminders.forEach(reminder => {
             addReminderToDOM(reminder);
         });
         updateEmptyListVisibility();
     }
 
 
-    function saveOrUpdateReminder(id, text, date, time, tag) { // NEW: added tag parameter
+    function saveOrUpdateReminder(id, text, date, time, tag) {
         let reminders = JSON.parse(localStorage.getItem(remindersKey)) || [];
         const existingIndex = reminders.findIndex(r => r.id === id);
 
-        const processedTag = tag.trim().toLowerCase() || 'all'; // Ensure new/updated tags are lowercase and not empty
+        const processedTag = tag.trim().toLowerCase() || 'all';
 
         if (existingIndex > -1) {
-            // Update existing reminder, preserve 'completed' status
             reminders[existingIndex] = {
-                ...reminders[existingIndex], // Keep existing properties like 'completed'
+                ...reminders[existingIndex],
                 text,
                 date: date || '',
                 time: time || '',
-                tag: processedTag // NEW: Save tag
+                tag: processedTag
             };
         } else {
-            // Add new reminder, default to not completed
-            const newReminder = { id, text, date: date || '', time: time || '', completed: false, tag: processedTag }; // NEW: Add tag
+            const newReminder = { id, text, date: date || '', time: time || '', completed: false, tag: processedTag };
             reminders.push(newReminder);
         }
 
         saveReminders(reminders);
         loadAndRenderReminders();
-        renderTagFilters(); // NEW: Re-render tag filters after saving
+        renderTagCheckboxes(); // NEW: Re-render checkboxes after saving a reminder
     }
 
     function toggleCompletion(id) {
@@ -294,8 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
             reminderDetails.appendChild(reminderDateTimeSpan);
         }
 
-        // --- NEW: Display Reminder Tag ---
-        if (reminder.tag && reminder.tag !== 'all') { // Only display if tag exists and is not 'all'
+        if (reminder.tag && reminder.tag !== 'all') {
             const reminderTagSpan = document.createElement('span');
             reminderTagSpan.textContent = reminder.tag;
             reminderTagSpan.classList.add('reminder-tag');
@@ -352,41 +394,67 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- NEW: Tag Management Functions ---
+    // --- NEW: Tag Checkbox Management Functions ---
     function getUniqueTags() {
         const reminders = JSON.parse(localStorage.getItem(remindersKey)) || [];
-        // Ensure all reminders have a tag before collecting unique ones
         const processedReminders = reminders.map(r => {
             if (typeof r.tag === 'undefined' || r.tag === null || r.tag.trim() === '') {
                 r.tag = 'all';
             } else {
-                r.tag = r.tag.toLowerCase(); // Ensure tags are lowercase
+                r.tag = r.tag.toLowerCase();
             }
             return r;
         });
 
-        const tags = new Set(['all']); // Start with 'all' as a default tag
+        const tags = new Set(); // Start with empty set, will add 'all' explicitly
         processedReminders.forEach(reminder => {
             if (reminder.tag) {
                 tags.add(reminder.tag);
             }
         });
-        return Array.from(tags).sort(); // Convert Set to Array and sort alphabetically
+        const uniqueTagsArray = Array.from(tags).sort();
+        // Ensure 'all' is always the first option if it exists, otherwise add it.
+        if (!uniqueTagsArray.includes('all')) {
+            uniqueTagsArray.unshift('all');
+        } else {
+            // If 'all' is in the array, ensure it's at the beginning.
+            uniqueTagsArray.sort((a, b) => {
+                if (a === 'all') return -1;
+                if (b === 'all') return 1;
+                return a.localeCompare(b);
+            });
+        }
+        return uniqueTagsArray;
     }
 
-    function renderTagFilters() {
+    function renderTagCheckboxes() {
         const uniqueTags = getUniqueTags();
-        tagFiltersContainer.innerHTML = ''; // Clear existing buttons
+        tagFilterMenu.innerHTML = ''; // Clear existing checkboxes
 
         uniqueTags.forEach(tag => {
-            const button = document.createElement('button');
-            button.classList.add('tag-filter-button');
-            button.textContent = tag.charAt(0).toUpperCase() + tag.slice(1); // Capitalize first letter for display
-            button.dataset.tag = tag; // Store raw tag in dataset for filtering
-            if (tag === currentFilterTag) {
-                button.classList.add('active');
+            const isAllOption = (tag === 'all');
+            const itemDiv = document.createElement('div');
+            itemDiv.classList.add('tag-filter-menu-item');
+            if (isAllOption) {
+                itemDiv.classList.add('all-tags-option');
             }
-            tagFiltersContainer.appendChild(button);
+
+            const checkboxId = `tag-checkbox-${tag}`;
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = checkboxId;
+            checkbox.dataset.tag = tag; // Store the tag name in a data attribute
+            
+            // Determine if the checkbox should be checked
+            checkbox.checked = selectedTags.includes(tag);
+
+            const label = document.createElement('label');
+            label.htmlFor = checkboxId;
+            label.textContent = tag.charAt(0).toUpperCase() + tag.slice(1); // Capitalize for display
+
+            itemDiv.appendChild(checkbox);
+            itemDiv.appendChild(label);
+            tagFilterMenu.appendChild(itemDiv);
         });
     }
 
@@ -396,7 +464,7 @@ document.addEventListener('DOMContentLoaded', () => {
         uniqueTags.forEach(tag => {
             if (tag !== 'all') { // Don't suggest 'all' in the input datalist
                 const option = document.createElement('option');
-                option.value = tag.charAt(0).toUpperCase() + tag.slice(1); // Capitalize for display
+                option.value = tag.charAt(0).toUpperCase() + tag.slice(1);
                 availableTagsDatalist.appendChild(option);
             }
         });
@@ -460,7 +528,6 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 originalParagraph.textContent = originalText;
                 originalActions.style.display = 'flex';
-                feedbackPopup.style.display = 'none';
             }, 300);
         }, 5000);
 

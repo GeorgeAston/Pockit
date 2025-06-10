@@ -46,8 +46,14 @@
         <section id="reminder-list">
             <h1>Your Reminders</h1>
 
-            <div id="tag-filters">
-                
+            <div class="search-bar-container">
+                <input type="search" id="search-reminders" placeholder="Search reminders...">
+                <div class="tag-filter-dropdown-container">
+                    <button id="tag-filter-toggle" class="tag-filter-button">Filter Tags <span class="dropdown-arrow">▼</span></button>
+                    <div id="tag-filter-menu" class="tag-filter-menu-hidden">
+                    </div>
+                </div>
+
             </div>
 
             <ul id="reminders">
