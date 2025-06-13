@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pockit - Help</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
 </head>
 <body>
     <main>
@@ -19,90 +20,125 @@
             <h2>What is Pockit?</h2>
             <p>Pockit is a straightforward and easy-to-use web application designed to help you set and manage reminders for your everyday tasks. Accessible directly through your web browser and installable as a Progressive Web App (PWA), Pockit aims to be your reliable "pocket pal" for keeping track of what's important.</p>
         </section>
+        <section>
+            <h2>Getting Started</h2>
+            <p>To start using Pockit, simply open the app in your web browser. You can also install it on your device for quick access. No sign-up or login is required; just start adding reminders right away!</p>
+        </section>
+        <section>
+            <h2>Adding a Reminder</h2>
+            <p>To create a new reminder:</p>
+            <ol>
+                <li>Click the "Add New Reminder" button at the top of the app.</li>
+                <li>A modal window (pop-up form) will appear.</li>
+                <li>Enter your reminder text in the "Reminder Text" field. This is the only required field.</li>
+                <li>(Optional) Select a specific date and time for your reminder using the "Date" and "Time" fields.</li>
+                <li>(Optional) Assign a tag to your reminder in the "Tag (Optional)" field (e.g., Work, Home, Personal, Shopping). You can type a new tag or select from existing ones that appear as suggestions.</li>
+                <li>Click the "Save Reminder" button.</li>
+            </ol>
+            <p>Your new reminder will appear in your list.</p>
+        </section>
 
         <section>
-            <h2>Key Features</h2>
+            <h2>Editing a Reminder</h2>
+            <p>Need to change something about an existing reminder?</p>
+            <ol>
+                <li>Find the reminder you wish to edit in your list.</li>
+                <li>Click the "Edit" button next to that reminder.</li>
+                <li>The reminder modal will open, pre-filled with the reminder's current details.</li>
+                <li>Make your desired changes to the text, date, time, or tag.</li>
+                <li>Click "Save Reminder" to apply your updates.</li>
+                <li>To cancel editing without saving changes, click the "Cancel" button or the 'X' icon.</li>
+            </ol>
+        </section>
 
-            <section>
-                <h3>1. Adding New Reminders</h3>
-                <ul>
-                    <li><strong>Flexible Input:</strong> Click the "Add New Reminder" button to open a dedicated form. You can enter a reminder description, and optionally set a specific date and time. If you provide a date, please also provide a time for accurate scheduling.</li>
-                    <li><strong>Local Storage:</strong> All your reminders are stored securely and privately in your browser's local storage. They are never sent to external servers.</li>
-                </ul>
-            </section>
+        <section>
+            <h2>Marking a Reminder Complete / Undo</h2>
+            <p>Keep track of your completed tasks:</p>
+            <ol>
+                <li>To mark a reminder as done, click the "Complete" button next to it. The reminder will be visually marked as completed and moved to the bottom of your list.</li>
+                <li>If you accidentally mark a reminder complete, a small "Undo" pop-up will briefly appear at the bottom of the screen. Click "Undo" to revert the completion.</li>
+                <li>If you need to un-complete a reminder later, simply click the "Undo" button (which appears in place of "Complete" for completed tasks).</li>
+            </ol>
+        </section>
 
-            <section>
-                <h3>2. Viewing & Organizing Reminders</h3>
-                <ul>
-                    <li><strong>Clear List Display:</strong> All your active reminders are displayed in a clear list under the "Your Reminders" heading.</li>
-                    <li><strong>Smart Sorting:</strong> Reminders with a set date and time are automatically sorted by their due date (earliest first). Reminders without a date/time appear at the end of the list.</li>
-                    <li><strong>Visual Highlighting:</strong>
-                        <ul>
-                            <li><strong>Past Reminders:</strong> If a reminder's set date and time has passed, its background will turn a muted red to indicate it's overdue.</li>
-                            <li><strong>Upcoming Reminders:</strong> Reminders due within the next 24 hours will have a muted orange/gold background, helping you prioritise with ease.</li>
-                            <li>These highlights automatically update as time passes.</li>
-                        </ul>
-                    </li>
-                    <li><strong>"No reminders yet" Message:</strong> If your list is empty, a friendly message will let you know.</li>
-                </ul>
-            </section>
+        <section>
+            <h2>Deleting a Reminder</h2>
+            <p>To permanently remove a reminder:</p>
+            <ol>
+                <li>Find the reminder you wish to delete in your list.</li>
+                <li>Click the "Delete" button next to the reminder.</li>
+                <li>You will be asked for confirmation. Click "OK" to proceed with deletion, or "Cancel" to keep the reminder.</li>
+            </ol>
+            <p><strong>Note:</strong> Deleted reminders cannot be recovered.</p>
+        </section>
 
-            <section>
-                <h3>3. Editing Reminders</h3>
-                <ul>
-                    <li><strong>Modify Details:</strong> Click the "Edit" button next to any reminder to re-open the reminder form. You can change the text, date, and time.</li>
-                </ul>
-            </section>
+        <section>
+            <h2>Tagging Reminders (New &amp; Improved!)</h2>
+            <p>Tags help you organize your reminders into categories like 'Work', 'Home', 'Personal', 'Shopping', etc. They are now managed through a new dropdown system, allowing for powerful multi-selection.</p>
+            <ol>
+                <li>
+                    <strong>Adding a Tag to a Reminder:</strong>
+                    <ul>
+                        <li>When adding or editing a reminder in the modal, simply type your desired tag into the "Tag (Optional)" field.</li>
+                        <li>Existing tags you've used will appear as suggestions as you type.</li>
+                        <li>If you leave the tag field empty, or your reminder does not have a tag, it will automatically be assigned the default 'all' tag for easy viewing.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Filtering Reminders by Tag:</strong>
+                    <ul>
+                        <li>On the main screen, locate and click the **"Filter Tags"** button. A dropdown menu containing your tags will appear.</li>
+                        <li>The menu lists all unique tags you've used, plus an "All Tags" option.</li>
+                        <li><strong>To view all reminders:</strong> Select the **"All Tags"** checkbox. This will automatically deselect any other tags you might have chosen, ensuring every reminder is displayed regardless of its specific tag.</li>
+                        <li><strong>To view reminders with specific tags:</strong> Check one or more of the individual tag checkboxes (e.g., 'Work', 'Personal', 'Urgent').</li>
+                        <li>You can select multiple tags simultaneously to see reminders that match *any* of the chosen tags (e.g., check both 'Work' and 'Urgent' to display reminders tagged as either 'Work' OR 'Urgent').</li>
+                        <li>To close the dropdown, click outside the menu or click the "Filter Tags" button again.</li>
+                    </ul>
+                </li>
+            </ol>
+        </section>
 
-            <section>
-                <h3>4. Deleting Reminders</h3>
-                <ul>
-                    <li><strong>Individual Deletion:</strong> Each reminder has a "Delete" button. Clicking this will prompt a confirmation dialog to prevent accidental deletions. Confirm to remove the reminder from your list and local storage.</li>
-                </ul>
-            </section>
+        <section>
+            <h2>Searching Reminders</h2>
+            <p>Quickly find specific reminders by typing keywords into the new search bar located above your tag filters.</p>
+            <ol>
+                <li>
+                    <strong>How to Search:</strong>
+                    <ul>
+                        <li>Click into the **"Search reminders..."** input field.</li>
+                        <li>Begin typing your search term. The reminder list will filter automatically and instantly as you type.</li>
+                        <li>The search functionality will look for matches in both the reminder's main text content and its assigned tags.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Combining Search and Tag Filters:</strong>
+                    <ul>
+                        <li>You can effectively combine the search bar and the tag filters for more precise results.</li>
+                        <li>First, filter your reminders by desired tags using the "Filter Tags" dropdown.</li>
+                        <li>Then, use the search bar to refine those already-filtered results further within the selected tag categories.</li>
+                        <li>For example, if you filter by the 'Work' tag, then type "meeting" into the search bar, you'll see only your 'Work' reminders that contain the word "meeting".</li>
+                    </ul>
+                </li>
+            </ol>
+        </section>
 
-            <section>
-                <h3>5. Progressive Web App (PWA) Features</h3>
-                <ul>
-                    <li><strong>Installable:</strong> Pockit can be installed to your device's home screen or app launcher, behaving like a native application. Look for the "Install" option in your browser's menu (usually three dots or a similar icon).</li>
-                    <li><strong>Offline Access (Basic):</strong> Once you have loaded Pockit in your browser, the basic structure of the app should be accessible even if you temporarily lose your internet connection. However, adding, editing, or deleting reminders requires the app to be running in your browser.</li>
-                </ul>
-            </section>
+        <section>
+            <h2>Automatic Refresh &amp; Highlighting</h2>
+            <p>Your reminders list automatically refreshes every minute to keep statuses and due dates up-to-date without you needing to refresh the page manually.</p>
+            <ul>
+                <li>Reminders approaching their due date (within the next 24 hours) are highlighted in **yellow** for quick visibility.</li>
+                <li>Overdue reminders (those with a past date/time) appear in **red**.</li>
+            </ul>
+        </section>
 
-            <section>
-                <h3>6. Giving Feedback</h3>
-                <ul>
-                    <li><strong>Feature Suggestion Pop-up:</strong> Occasionally, a small pop-up may appear in the bottom right corner of your screen asking for your thoughts on new features.</li>
-                    <li>If you dismiss this pop-up, don't worry – we'll gently ask for your feedback again in about 4 weeks. </li>
-                    <li>Alternatively, you can drop us an email at <a href="mailto:support.pockit@myorchard.org?subject=Pockit%20Feature%20Suggestion&body=What%20features%20would%20make%20Pockit%20even%20better%20for%20you? ">this link here. </a></li>
-                </ul>
-            </section>
+        <section>
+            <h2>Pop-up Notifications</h2>
+            <p>Beyond the "Undo" pop-up for completed tasks, Pockit Reminders may occasionally display a small feedback pop-up at the bottom of your screen. This is designed to appear periodically (e.g., every 4 weeks) to gather your thoughts on the app's functionality and help us improve.</p>
+            <ul>
+                <li>You can dismiss this pop-up, and it won't appear again for a set period.</li>
+            </ul>
+        </section>
 
-            <section>
-                <h3>7. Privacy Focused</h3>
-                <ul>
-                    <li><strong>Local Data Storage:</strong> All your reminder data is stored securely within your own browser's local storage. We do not collect, store, or share your personal information or your reminders on any external servers.</li>
-                    <li><strong>Privacy Policy:</strong> For more detailed information, please refer to our <a href="privacy.html">Privacy Policy</a>.</li>
-                </ul>
-            </section>
-
-            <section>
-                <h2>How to Use Pockit</h2>
-                <ol>
-                    <li><strong>Access Pockit:</strong> Open your preferred web browser (Chrome, Firefox, Safari, Edge, etc.) and navigate to the Pockit web app's URL.</li>
-                    <li><strong>Add a Reminder:</strong> Click the "Add New Reminder" button. Enter the text for your reminder, and optionally select a date and time. Click "Save Reminder".</li>
-                    <li><strong>View & Manage Reminders:</strong> Your active reminders will be listed on the main page. They will sort automatically and highlight based on their due date.</li>
-                    <li><strong>Edit a Reminder:</strong> Click the "Edit" button next to a reminder, modify its details in the form, and click "Save Reminder".</li>
-                    <li><strong>Delete a Reminder:</strong> To remove a reminder, click the "Delete" button next to it and confirm your choice.</li>
-                    <li><strong>Install as an App (Optional):</strong>
-                        <ul>
-                            <li><strong>Chrome/Edge:</strong> Look for the "Install app" icon in the address bar (usually a plus sign in a circle) or in the browser's menu (three dots).</li>
-                            <li><strong>Firefox:</strong> Firefox may prompt you to install. Otherwise, look for the "Install" option in the menu.</li>
-                            <li><strong>Safari:</strong> On macOS, you can use "Add to Dock." On iOS, use the "Share" button and then "Add to Home Screen."</li>
-                        </ul>
-                    </li>
-                </ol>
-            </section>
     </main>
 
     <script src="back.js"></script>
