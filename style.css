@@ -1,7 +1,8 @@
-/* General Body and Main Container Styling for Dark Mode */
+/* --- Base Styles & General Layout --- */
 body {
-    font-family: sans-serif;
-    margin: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* A slightly more modern sans-serif */
+    margin: 0; /* Reset default body margin */
+    padding: 20px; /* Add overall padding around content */
     line-height: 1.6;
     background-color: #1a1a1a; /* Dark background */
     color: #f0f0f0; /* Light text color */
@@ -22,6 +23,7 @@ header {
     margin: 0 auto 10px; /* Center logo and add space below */
 }
 
+/* Prevents image dragging/selection */
 img {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -40,15 +42,18 @@ a {
     color: #62b8ff; /* Lighter blue for links */
     text-decoration: none;
 }
+
 a:hover {
     text-decoration: underline;
     color: #3e88c5; /* Slightly darker blue on hover */
 }
+
 a:visited {
-    color: #168400; /* Lighter blue for visited links */
+    color: #168400; /* Lighter blue for visited links (consider if this contrast works in dark mode) */
 }
+
 a:active {
-    color: #896a03; /* Darker blue for active links */
+    color: #896a03; /* Darker blue for active links (consider if this contrast works in dark mode) */
 }
 
 main {
@@ -60,39 +65,49 @@ main {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); /* Darker shadow for contrast */
 }
 
-/* --- Buttons (Global and Specific) --- */
-button {
-    display: block;
-    width: 100%;
-    padding: 10px 15px;
-    margin-bottom: 20px;
-    background-color: #007bff; /* Stays blue for primary action */
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-}
-
-/* --- Reminder List Styling --- */
-#reminder-list h2 {
+/* --- Headings --- */
+/* Target the h2 within the specific section for consistency */
+section#your-reminders-section h2 {
     margin-top: 0;
     border-bottom: 2px solid #555; /* Lighter border for contrast */
     padding-bottom: 10px;
     margin-bottom: 15px;
 }
 
+/* --- General Buttons --- */
+/* Styles applied to all buttons unless specifically overridden */
+button {
+    padding: 10px 15px;
+    background-color: #007bff; /* Primary blue for general buttons */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    text-align: center; /* Ensure text is centered */
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* --- Add New Reminder Button --- */
+#show-add-reminder-modal.add-new-button { /* Using both ID and class for specificity */
+    display: block; /* Make the button a block element to control its margin and centering */
+    width: fit-content; /* Make the button only as wide as its content */
+    margin-left: auto; /* Center the button horizontally */
+    margin-right: auto; /* Center the button horizontally */
+    margin-top: 15px; /* Space above the button, from the summary box */
+    margin-bottom: 20px; /* Space below the button, before the search bar */
+}
+
+/* --- Reminder List Styling --- */
 #reminders {
     list-style: none;
     padding: 0;
 }
 
-/* Ensure padding is consistent despite border-left */
 #reminders li {
     border: 1px solid #444; /* Darker border */
     border-radius: 5px;
@@ -102,56 +117,17 @@ button:hover {
     justify-content: space-between;
     align-items: center;
     color: #e0e0e0; /* Lighter text for list items */
-    padding-left: 10px;
-    padding-right: 10px;
-    background-color: 3a3a3a; /* Darker background for list items */
-    transition: background-color 0.3s ease, border-color 0.3s ease, opacity 0.3s ease; /* Smooth transition for hover effects */
-}
-
-/* --- Reminder Highlight Colors --- */
-.past-reminder {
-    background-color: #5f1010; /* Muted deep red background */
-    border-left: 5px solid #9e3d3d; /* Complementary darker red border */
-    color: #e0e0e0; /* Ensure text remains light and readable */
-    /* Removed opacity: 0.7; to make it fully colored */
-}
-
-.upcoming-reminder {
-    background-color: #573706; /* Muted warm orange/gold background */
-    border-left: 5px solid #b58d3d; /* Complementary darker orange/gold border */
-    color: #e0e0e0; /* Ensure text remains light and readable */
-}
-
-/* --- Completed Reminder Styling --- */
-/* This must come AFTER highlight styles to override them when completed */
-.completed-reminder {
-    /* text-decoration: line-through;  */
-    opacity: 0.8;
-    background-color: #333 !important;
-    border-left: 5px solid #666 !important;
-}
-
-/* Ensure completed items get their own text color */
-.completed-reminder .reminder-text {
-    color: #ebebeb !important; /* Lighter grey for the struck-through text */
-    text-decoration: line-through !important; /* Apply strikethrough to text here */
-}
-
-.completed-reminder .reminder-datetime {
-    color: #b0b0b0 !important; /* Lighter grey for datetime */
-    text-decoration: none !important; /* IMPORTANT: Prevent strikethrough for datetime */
-}
-
-/* IMPORTANT: Prevent strikethrough for buttons within a completed reminder */
-.completed-reminder .reminder-actions button {
-    text-decoration: none !important; /* Ensure buttons are NOT struck through */
-    opacity: 1 !important; /* Keep buttons fully opaque to be clearly clickable */
-    color: #fff !important; /* Ensure their text color is bright, not dimmed */
+    padding: 10px; /* Unified padding */
+    background-color: #3a3a3a; /* Darker background for list items (corrected missing #) */
+    transition: background-color 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
 }
 
 .reminder-details {
-    flex-grow: 1;
-    margin-right: 15px;
+    display: flex;
+    flex-wrap: wrap; /* Allow details to wrap on smaller screens */
+    align-items: center;
+    flex-grow: 1; /* Allows details to take up available space */
+    margin-right: 15px; /* Space between details and actions */
 }
 
 .reminder-text {
@@ -162,16 +138,27 @@ button:hover {
 
 .reminder-datetime {
     font-size: 0.9em;
-    color: #ebd8d8; /* Slightly darker light text for date/time */
+    color: #c0c0c0; /* Slightly darker light text for date/time */
+    margin-left: 5px; /* Space from reminder text */
 }
 
-/* --- General Button Styling within Reminders (for consistency) --- */
+.reminder-tag {
+    font-size: 0.8em; /* Smaller font size */
+    background-color: #4a4a4a; /* Slightly darker background */
+    color: #bbb;
+    padding: 3px 8px;
+    border-radius: 10px; /* Pill shape */
+    margin-left: 10px; /* Space from date/time or text */
+    flex-shrink: 0; /* Prevent tag from shrinking */
+}
+
+/* --- Reminder Action Buttons (within list items) --- */
 .reminder-actions {
     display: flex;
     gap: 8px; /* Space between buttons */
     align-items: center;
     flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
-    margin-top: 5px; /* Add a little space if they wrap */
+    margin-top: 5px; /* Add a little space if they wrap onto a new line */
 }
 
 .reminder-actions .action-button { /* Generic class for all action buttons */
@@ -182,6 +169,18 @@ button:hover {
     border: none;
     transition: background-color 0.3s ease;
     min-width: 70px; /* Give buttons a consistent minimum width */
+    display: inline-block; /* Ensure they behave like inline buttons */
+    width: auto; /* Override global button's 100% width */
+    margin: 0; /* Remove global button's margin-bottom */
+}
+
+.reminder-actions .complete-button {
+    background-color: #005414; /* Green for "Complete" */
+    color: #fff;
+}
+
+.reminder-actions .complete-button:hover {
+    background-color: #218838;
 }
 
 .reminder-actions .edit-button {
@@ -202,383 +201,77 @@ button:hover {
     background-color: #c82333;
 }
 
-/* --- Completion Button Styling --- */
-.reminder-actions .complete-button {
-    background-color: #005414; /* Green for "Complete" */
-    color: #fff;
+/* --- Reminder Highlight Colors --- */
+.past-reminder {
+    background-color: #5f1010; /* Muted deep red background */
+    border-left: 5px solid #9e3d3d; /* Complementary darker red border */
+    color: #e0e0e0; /* Ensure text remains light and readable */
 }
 
-.reminder-actions .complete-button:hover {
-    background-color: #218838;
+.upcoming-reminder {
+    background-color: #573706; /* Muted warm orange/gold background */
+    border-left: 5px solid #b58d3d; /* Complementary darker orange/gold border */
+    color: #e0e0e0; /* Ensure text remains light and readable */
 }
 
-/* --- Undo Complete Pop-up Styling --- */
-.undo-complete-popup {
-    display: none; /* Controlled by JS, but starts hidden */
-    position: fixed;
-    bottom: 20px;
-    left: 50%; /* Center horizontally */
-    transform: translateX(-50%) translateY(20px); /* Start slightly below, centered */
-    background-color: #2c2c2c; /* Darker background for this popup */
-    color: #e0e0e0;
-    padding: 12px 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    z-index: 1001; /* Higher than feedback popup */
-    opacity: 0;
-    transition: opacity 0.5s ease-out, transform 0.5s ease-out; /* Smooth show/hide */
-    white-space: nowrap; /* Prevent text wrapping */
-    display: flex; /* Use flexbox for content alignment */
-    align-items: center; /* Vertically align text and button */
-    gap: 15px; /* Space between text and button */
+/* --- Completed Reminder Styling --- */
+/* This must come AFTER highlight styles to override them when completed */
+.completed-reminder {
+    opacity: 0.8; /* Slightly dim completed reminders */
+    background-color: #333 !important; /* Override background */
+    border-left: 5px solid #666 !important; /* Override border */
 }
 
-.undo-complete-popup.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0); /* Slide up while centered */
+.completed-reminder .reminder-text {
+    color: #ebebeb !important; /* Lighter grey for the struck-through text */
+    text-decoration: line-through !important; /* Apply strikethrough to text here */
 }
 
-.undo-complete-popup p {
-    margin: 0; /* Remove default margin */
-    font-size: 0.95rem;
+.completed-reminder .reminder-datetime,
+.completed-reminder .reminder-tag {
+    color: #b0b0b0 !important; /* Lighter grey for datetime and tags */
+    text-decoration: none !important; /* IMPORTANT: Prevent strikethrough for datetime and tags */
 }
 
-.undo-complete-popup button {
-    padding: 6px 15px;
-    margin: 0;
-    background-color: #007bff; /* Blue for undo button */
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.3s ease;
+.completed-reminder .reminder-actions button {
+    text-decoration: none !important; /* Ensure buttons are NOT struck through */
+    opacity: 1 !important; /* Keep buttons fully opaque to be clearly clickable */
+    color: #fff !important; /* Ensure their text color is bright, not dimmed */
 }
 
-.undo-complete-popup button:hover {
-    background-color: #0056b3;
+/* --- Search Bar Styling --- */
+.search-bar-container {
+    margin-bottom: 20px; /* Space below the search bar */
+    padding: 10px; /* Consistent padding with tag filters */
+    background-color: #2a2a2a; /* Consistent background */
+    border-radius: 8px; /* Consistent border radius */
 }
 
-/* Responsive adjustment for small screens */
-@media (max-width: 600px) {
-    .undo-complete-popup {
-        width: calc(100% - 40px); /* Take up more width on small screens */
-        left: 20px; /* Position from left */
-        transform: translateX(0) translateY(20px); /* No longer needs translateX(-50%) */
-    }
-    .undo-complete-popup.show {
-        transform: translateX(0) translateY(0);
-    }
-}
-
-.reminder-actions button {
-    /* These inherit from the global button style initially for shared properties */
-    color: #fff;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    margin-left: 8px;
-    transition: background-color 0.3s ease;
-    width: auto;
-    display: inline-block;
-}
-
-.reminder-actions .edit-button {
-    background-color: #013b78; /* Blue for Edit */
-}
-.reminder-actions .edit-button:hover {
-    background-color: #0056b3;
-}
-
-.reminder-actions .delete-button {
-    background-color: #89000e; /* Red for Delete */
-}
-
-.reminder-actions .delete-button:hover {
-    background-color: #c82333;
-}
-
-/* --- Footer Styling --- */
-footer {
-    text-align: center;
-    margin-top: 20px;
-    padding: 10px 0;
-    color: #aaa; /* Lighter gray for footer text */
-    font-size: 0.9rem;
-}
-
-footer a {
-    color: #90caf9; /* Lighter blue for links */
-    text-decoration: none;
-}
-
-footer a:hover {
-    text-decoration: underline;
-}
-
-/* --- Modal Styling --- */
-/* Target the modal by its ID and class for higher specificity */
-#add-reminder-modal.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1000; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
-    transition: opacity 0.3s ease;
-    opacity: 0; /* Start hidden for transition */
-}
-
-/* This class is added by JavaScript to show the modal.
-   Target by ID, then class, then .show for highest specificity. */
-#add-reminder-modal.modal.show {
-    /* background: #f00; */
-    display: flex; /* Use flex to center the content */
-    align-items: center; /* Center vertically */
-    justify-content: center; /* Center horizontally */
-    opacity: 1; /* Fully visible */
-}
-
-/* Ensure your .modal-content is styled correctly as well */
-.modal-content {
-    background-color: #2c2c2c;
-    padding: 25px;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    width: 90%;
-    max-width: 500px;
-    position: relative; /* For positioning the close button */
-    box-sizing: border-box; /* Include padding in width calculation */
-    max-height: 90vh; /* Limit height to viewport */
-    overflow-y: auto; /* Enable scrolling if content is too long */
-}
-
-.modal-content h2 {
-    border-bottom: 2px solid #555;
-    color: #fff; /* Ensure heading is bright */
-}
-
-.close-button {
-    color: #ccc; /* Lighter close button */
-}
-
-.close-button:hover,
-.close-button:focus {
-    color: #fff; /* White on hover */
-}
-
-/* --- Form Styling within modal for Dark Mode --- */
-#reminder-form label {
-    color: #e0e0e0; /* Lighter label text */
-}
-
-#reminder-form input[type="text"],
-#reminder-form input[type="date"],
-#reminder-form input[type="time"] {
-    background-color: #4a4a4a; /* Darker input background */
-    color: #f0f0f0; /* Light input text */
-    border: 1px solid #666; /* Lighter border for visibility */
-}
-
-/* Style for save button */
-#reminder-form button[type="submit"] {
-    background-color: #28a745; /* Green color for save */
-}
-
-#reminder-form button[type="submit"]:hover {
-    background-color: #218838;
-}
-
-/* Style for cancel button */
-#reminder-form #cancel-reminder {
-    background-color: #6c757d; /* Gray color for cancel */
-}
-
-#reminder-form #cancel-reminder:hover {
-    background-color: #5a6268;
-}
-
-
-/* --- Basic Responsive Design for Dark Mode --- */
-@media (max-width: 600px) {
-    body {
-        margin: 10px;
-    }
-
-    main {
-        padding: 15px;
-        border-radius: 0;
-        box-shadow: none;
-    }
-
-    button {
-        font-size: 0.9rem;
-        padding: 8px 12px;
-        margin-bottom: 15px;
-    }
-
-    #reminders li {
-        padding: 10px;
-        margin-bottom: 8px;
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .reminder-details {
-        margin-right: 0;
-        margin-bottom: 10px;
-    }
-
-    .reminder-actions {
-        width: 100%;
-        display: flex;
-        justify-content: flex-end;
-    }
-    .reminder-actions button {
-        margin-left: 5px;
-        margin-right: 0;
-        padding: 7px 10px;
-    }
-
-    .modal-content {
-        width: 95%;
-        margin: 20px auto;
-        padding: 15px;
-    }
-
-    #reminder-form input[type="text"],
-    #reminder-form input[type="date"],
-    #reminder-form input[type="time"] {
-        width: calc(100% - 20px);
-    }
-}
-
-/* ------------------------------- */
-/* --- Feedback Pop-up Styling --- */
-.feedback-popup {
-    display: block; /* Change to block, hide initially with opacity/pointer-events */
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #3b3b3b; /* Dark background */
-    color: #e0e0e0; /* Light text */
-    padding: 15px 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    max-width: 300px;
-    text-align: center;
-    z-index: 1000; /* Ensure it's above other content */
-    opacity: 0; /* Start invisible for fade-in effect */
-    transform: translateY(20px); /* Start slightly below for slide-up effect */
-    transition: opacity 0.3s ease-out, transform 0.3s ease-out; /* Keep these for smooth show/hide */
-    pointer-events: none; /* Make it unclickable when hidden */
-}
-
-.feedback-popup.show {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto; /* Make it clickable when visible */
-}
-
-.feedback-popup p {
-    margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 0.95rem;
-}
-
-.feedback-popup-actions {
-    display: flex;
-    justify-content: space-around;
-    gap: 10px; /* Space between buttons */
-}
-
-.feedback-accept-button {
-    flex-grow: 1; /* Make buttons share space */
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    text-align: center; /* Ensure text is centered for links */
-    text-decoration: none; /* Remove underline for links */
-    transition: background-color 0.3s ease;
-    margin-bottom: 0; /* Override global button margin */
-    background-color: #007bff; /* Blue for suggestion */
-    color: #fff;
-    border: none;
-}
-
-.feedback-button,
-.feedback-dismiss-button {
-    flex-grow: 1; /* Make buttons share space */
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    text-align: center; /* Ensure text is centered for links */
-    text-decoration: none; /* Remove underline for links */
-    transition: background-color 0.3s ease;
-    margin-bottom: 0; /* Override global button margin */
-}
-
-.feedback-accept-button:hover {
-    background-color: #0056b3;
-}
-.feedback-accept-button a:link {
-    color: #fff; /* Ensure link color is white */
-    text-decoration: none; /* Remove underline for links */
-}
-.feedback-accept-button a:hover {
-    color: #fff; /* Ensure link color is white on hover */
-    text-decoration: none; /* Add underline on hover for links */
-}
-
-.feedback-dismiss-button {
-    background-color: #6c757d; /* Gray for dismiss */
-    color: #fff;
-    border: none;
-}
-
-.feedback-dismiss-button:hover {
-    background-color: #5a6268;
-}
-
-/* Responsive adjustment for very small screens */
-@media (max-width: 480px) {
-    .feedback-popup {
-        right: 10px;
-        bottom: 10px;
-        max-width: calc(100% - 40px); /* Adjust width to fit */
-    }
-}
-
-/* --- Tag Input Styling in Form --- */
-.form-group input[type="text"]#reminder-tag {
-    /* Style consistency with other inputs */
-    width: calc(100% - 20px); /* Adjust based on padding */
-    padding: 10px;
-    margin-bottom: 10px;
+#search-reminders {
+    width: calc(100% - 20px); /* Adjust for padding, similar to form inputs */
+    padding: 12px; /* Slightly more padding for prominence */
     border: 1px solid #555;
     border-radius: 5px;
     background-color: #2c2c2c;
     color: #e0e0e0;
+    font-size: 1rem;
+    box-sizing: border-box; /* Include padding in width */
 }
 
-/* --- NEW: Tag Filter Dropdown Styling --- */
+#search-reminders::placeholder {
+    color: #aaa;
+}
+
+/* --- Tag Filter Dropdown Styling --- */
 .tag-filter-dropdown-container {
     position: relative;
-    /* margin-bottom: 10px; */
-    padding: 10px;
+    margin-bottom: 15px; /* Space below the filter container */
+    padding: 10px; /* Consistent padding */
     background-color: #2a2a2a;
-    /* border-radius: 8px; */
+    border-radius: 8px;
     display: flex;
-    justify-content: center;
-    /* NEW: Add max-width to the container to prevent it from spanning too wide */
-    max-width: 135px; /* Adjust this value as needed */
+    justify-content: center; /* Center the content inside */
+    max-width: 200px; /* Constrain the overall width of the filter section */
     margin-left: auto; /* Center the container itself */
     margin-right: auto; /* Center the container itself */
 }
@@ -586,7 +279,6 @@ footer a:hover {
 #tag-filter-toggle {
     background-color: #007bff;
     color: #e0e0e0;
-    /* padding: 10px 20px; */
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -594,15 +286,13 @@ footer a:hover {
     transition: background-color 0.2s ease, transform 0.1s ease;
     display: flex;
     align-items: center;
+    justify-content: center; /* Center text and arrow */
     gap: 8px;
-    /* NEW: Constrain the button's width */
-    width: 100%; /* Make it fill its constrained container */
-    max-width: 250px; /* Ensure it doesn't get ridiculously wide if container is larger */
+    width: 100%; /* Fill its constrained container */
     box-sizing: border-box; /* Include padding in the width calculation */
-    margin-bottom: 0px; /* Remove bottom margin to align with other elements */
-    /* NEW: Center the button text */
-    text-align: center;
+    margin-bottom: 0; /* Override global button margin */
 }
+
 #tag-filter-toggle:hover {
     background-color: #0056b3;
     transform: translateY(-1px);
@@ -631,7 +321,7 @@ footer a:hover {
     z-index: 100; /* Ensure it's above other content */
     padding: 10px 0; /* Vertical padding */
     opacity: 0;
-    visibility: hidden;
+    visibility: hidden; /* Use visibility for accessibility */
     transition: opacity 0.2s ease, visibility 0.2s ease;
 }
 
@@ -656,7 +346,6 @@ footer a:hover {
 
 .tag-filter-menu-item input[type="checkbox"] {
     margin-right: 10px;
-    /* Basic styling for checkbox (can be customized further if needed) */
     appearance: none; /* Hide default checkbox */
     -webkit-appearance: none;
     width: 18px;
@@ -698,81 +387,353 @@ footer a:hover {
     padding-bottom: 10px;
 }
 
-/* Style for displaying tag on reminder list item */
-.reminder-tag {
-    font-size: 0.8em; /* Smaller font size */
-    background-color: #4a4a4a; /* Slightly darker background */
-    color: #bbb;
-    padding: 3px 8px;
-    border-radius: 10px; /* Pill shape */
-    margin-left: 10px; /* Space from date/time or text */
-    flex-shrink: 0; /* Prevent tag from shrinking */
-}
-
-/* Adjust reminder details to accommodate the tag */
-.reminder-details {
-    display: flex;
-    flex-wrap: wrap; /* Allow details to wrap on smaller screens */
-    align-items: center;
-    flex-grow: 1;
-    margin-right: 15px;
-}
-
-/* --- NEW: Search Bar Styling --- */
-.search-bar-container {
-    margin-bottom: 5px;
-    padding: 10px; /* Consistent padding with tag filters */
-    background-color: #2a2a2a; /* Consistent background */
-    border-radius: 8px; /* Consistent border radius */
-}
-
-#search-reminders {
-    width: calc(100% - 20px); /* Adjust for padding, similar to form inputs */
-    padding: 12px; /* Slightly more padding for prominence */
-    border: 1px solid #555;
-    border-radius: 5px;
-    background-color: #2c2c2c;
-    color: #e0e0e0;
-    font-size: 1rem;
-    box-sizing: border-box; /* Include padding in width */
-}
-
-#search-reminders::placeholder {
-    color: #aaa;
-}
-
-/* --- Tag Filter Section Styling (Refined) --- */
-#tag-filters {
-    margin-bottom: 20px;
-    padding: 10px;
-    background-color: #2a2a2a;
+/* --- Feedback Pop-up Styling --- */
+.feedback-popup {
+    display: block; /* Controlled by JS's opacity/transform */
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #3b3b3b; /* Dark background */
+    color: #e0e0e0; /* Light text */
+    padding: 15px 20px;
     border-radius: 8px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px; /* Increased gap for better spacing */
-    justify-content: center;
-    /* Removed redundant `margin-bottom` if already present on container */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    max-width: 300px;
+    text-align: center;
+    z-index: 1000; /* Ensure it's above other content */
+    opacity: 0; /* Start invisible for fade-in effect */
+    transform: translateY(20px); /* Start slightly below for slide-up effect */
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out; /* Smooth show/hide */
+    pointer-events: none; /* Make it unclickable when hidden */
 }
 
-.tag-filter-button {
-    background-color: #555;
+.feedback-popup.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto; /* Make it clickable when visible */
+}
+
+.feedback-popup p {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+}
+
+.feedback-popup-actions {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px; /* Space between buttons */
+}
+
+.feedback-accept-button,
+.feedback-dismiss-button {
+    flex-grow: 1; /* Make buttons share space */
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    text-align: center; /* Ensure text is centered */
+    text-decoration: none; /* Remove underline for links inside */
+    transition: background-color 0.3s ease;
+    margin-bottom: 0; /* Override global button margin */
+    border: none; /* Ensure no border */
+    color: #fff; /* Default text color for feedback buttons */
+}
+
+.feedback-accept-button {
+    background-color: #007bff; /* Blue for suggestion */
+}
+
+.feedback-accept-button:hover {
+    background-color: #0056b3;
+}
+
+.feedback-accept-button a:link,
+.feedback-accept-button a:hover {
+    color: #fff; /* Ensure link color is white */
+    text-decoration: none; /* No underline */
+}
+
+
+.feedback-dismiss-button {
+    background-color: #6c757d; /* Gray for dismiss */
+}
+
+.feedback-dismiss-button:hover {
+    background-color: #5a6268;
+}
+
+/* Responsive adjustment for very small screens */
+@media (max-width: 480px) {
+    .feedback-popup {
+        right: 10px;
+        bottom: 10px;
+        max-width: calc(100% - 40px); /* Adjust width to fit */
+    }
+}
+
+/* --- Undo Complete Pop-up Styling --- */
+.undo-complete-popup {
+    display: none; /* Controlled by JS, but starts hidden for initial setup */
+    position: fixed;
+    bottom: 20px;
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%) translateY(20px); /* Start slightly below, centered */
+    background-color: #2c2c2c; /* Darker background for this popup */
     color: #e0e0e0;
-    padding: 8px 15px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    z-index: 1001; /* Higher than feedback popup */
+    opacity: 0;
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out; /* Smooth show/hide */
+    white-space: nowrap; /* Prevent text wrapping */
+    display: flex; /* Use flexbox for content alignment */
+    align-items: center; /* Vertically align text and button */
+    gap: 15px; /* Space between text and button */
+}
+
+.undo-complete-popup.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0); /* Slide up while centered */
+}
+
+.undo-complete-popup p {
+    margin: 0; /* Remove default margin */
+    font-size: 0.95rem;
+}
+
+.undo-complete-popup button {
+    padding: 6px 15px;
+    margin: 0; /* Override global button margin */
+    background-color: #007bff; /* Blue for undo button */
+    color: #fff;
     border: none;
-    border-radius: 20px;
+    border-radius: 5px;
     cursor: pointer;
     font-size: 0.9rem;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-    flex-shrink: 0;
-    white-space: nowrap; /* Prevent tag names from wrapping */
+    transition: background-color 0.3s ease;
+    width: auto; /* Override global button width */
 }
 
-.tag-filter-button:hover {
-    background-color: #666;
-    transform: translateY(-1px);
+.undo-complete-popup button:hover {
+    background-color: #0056b3;
 }
 
-.tag-filter-button.active {
-    background-color: #007bff;
+/* Responsive adjustment for undo popup on small screens */
+@media (max-width: 600px) {
+    .undo-complete-popup {
+        width: calc(100% - 40px); /* Take up more width on small screens */
+        left: 20px; /* Position from left */
+        transform: translateX(0) translateY(20px); /* No longer needs translateX(-50%) */
+    }
+    .undo-complete-popup.show {
+        transform: translateX(0) translateY(0);
+    }
+}
+
+/* --- Modal Styling --- */
+#add-reminder-modal.modal { /* Target by ID and class for specificity */
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+    transition: opacity 0.3s ease;
+    opacity: 0; /* Start hidden for transition */
+}
+
+#add-reminder-modal.modal.show { /* This class is added by JS to show */
+    display: flex; /* Use flex to center the content */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    opacity: 1; /* Fully visible */
+}
+
+.modal-content {
+    background-color: #2c2c2c;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    width: 90%;
+    max-width: 500px;
+    position: relative; /* For positioning the close button */
+    box-sizing: border-box; /* Include padding in width calculation */
+    max-height: 90vh; /* Limit height to viewport */
+    overflow-y: auto; /* Enable scrolling if content is too long */
+}
+
+.modal-content h2 {
+    border-bottom: 2px solid #555;
+    color: #fff; /* Ensure heading is bright */
+}
+
+.close-button {
+    color: #ccc; /* Lighter close button */
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
     font-weight: bold;
+    cursor: pointer;
+    background: none; /* Remove button background */
+    border: none; /* Remove button border */
+    padding: 0; /* Remove button padding */
+    line-height: 1; /* Adjust line height for icon */
+    width: auto; /* Override global button width */
+    margin: 0; /* Override global button margin */
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #fff; /* White on hover */
+}
+
+/* --- Form Styling within modal --- */
+#reminder-form label {
+    display: block; /* Make labels block elements for consistent spacing */
+    margin-bottom: 5px;
+    color: #e0e0e0; /* Lighter label text */
+}
+
+#reminder-form input[type="text"],
+#reminder-form input[type="date"],
+#reminder-form input[type="time"],
+#reminder-form input[type="text"]#reminder-tag { /* Include tag input for consistency */
+    width: calc(100% - 22px); /* Adjust for padding and border */
+    padding: 10px;
+    margin-bottom: 15px; /* Space between inputs */
+    background-color: #4a4a4a; /* Darker input background */
+    color: #f0f0f0; /* Light input text */
+    border: 1px solid #666; /* Lighter border for visibility */
+    border-radius: 5px;
+    box-sizing: border-box; /* Include padding and border in width */
+}
+
+/* Style for save button */
+#reminder-form button[type="submit"] {
+    background-color: #28a745; /* Green color for save */
+    width: 100%; /* Make it full width in the form */
+    margin-bottom: 10px; /* Space between Save and Cancel */
+}
+
+#reminder-form button[type="submit"]:hover {
+    background-color: #218838;
+}
+
+/* Style for cancel button */
+#reminder-form #cancel-reminder {
+    background-color: #6c757d; /* Gray color for cancel */
+    width: 100%; /* Make it full width in the form */
+    margin-bottom: 0; /* No margin below the last button in the form */
+}
+
+#reminder-form #cancel-reminder:hover {
+    background-color: #5a6268;
+}
+
+/* --- NEW: Reminder Summary Box Styling --- */
+.reminder-summary-box {
+    background-color: #3a3a3a; /* A slightly lighter dark background for visibility */
+    color: #e0e0e0; /* Light text for good contrast */
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 15px; /* Space between the summary box and the button */
+    font-size: 0.95rem;
+    line-height: 1.5;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
+}
+
+.reminder-summary-box p {
+    margin: 0; /* Remove default paragraph margins inside the box for tight spacing */
+    padding: 2px 0;
+}
+
+.reminder-summary-box .summary-highlight-overdue {
+    color: #ff6b6b; /* Bright red for overdue reminders */
+    font-weight: bold;
+}
+
+.reminder-summary-box .summary-highlight-upcoming {
+    color: #ffe66d; /* Yellow for upcoming reminders */
+    font-weight: bold;
+}
+
+/* --- Footer Styling --- */
+footer {
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px 0;
+    color: #aaa; /* Lighter gray for footer text */
+    font-size: 0.9rem;
+}
+
+footer a {
+    color: #90caf9; /* Lighter blue for links */
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 600px) {
+    body {
+        padding: 10px; /* Reduce overall padding */
+    }
+
+    main {
+        padding: 15px;
+        border-radius: 0; /* Remove border-radius on small screens for full width look */
+        box-shadow: none; /* Remove shadow on small screens */
+    }
+
+    /* Adjust main add button for smaller screens if needed (already handled by centering) */
+    #show-add-reminder-modal.add-new-button {
+        width: 100%; /* Make button full width on small screens */
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    #reminders li {
+        padding: 10px;
+        margin-bottom: 8px;
+        flex-direction: column; /* Stack details and actions vertically */
+        align-items: flex-start;
+    }
+
+    .reminder-details {
+        margin-right: 0;
+        margin-bottom: 10px; /* Space below details when stacked */
+        width: 100%; /* Take full width */
+    }
+
+    .reminder-actions {
+        width: 100%;
+        justify-content: flex-end; /* Align buttons to the right */
+    }
+    .reminder-actions .action-button {
+        margin-left: 5px; /* Adjust spacing between buttons */
+        margin-right: 0;
+        padding: 7px 10px;
+        font-size: 0.8rem; /* Slightly smaller text for action buttons */
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 20px auto; /* Re-center with some margin */
+        padding: 15px;
+    }
+
+    #reminder-form input[type="text"],
+    #reminder-form input[type="date"],
+    #reminder-form input[type="time"],
+    #reminder-form input[type="text"]#reminder-tag {
+        width: 100%; /* Ensure form inputs are full width */
+    }
 }

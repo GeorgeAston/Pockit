@@ -17,34 +17,36 @@
     <br>
 
     <main>
-        <button id="show-add-reminder-modal"><strong>Add New Reminder</strong></button>
-        
-        <div id="add-reminder-modal" class="modal">
-            <div class="modal-content">
-                <span class="close-button">&times;</span>
-                <h2>Add/Edit Reminder</h2>
-                <form id="reminder-form">
-                    <input type="hidden" id="reminder-id-hidden"> <label for="reminder-text">Reminder:</label>
-                    <input type="text" id="reminder-text" name="reminder-text" required><br><br>
-
-                    <label for="reminder-date">Date:</label>
-                    <input type="date" id="reminder-date" name="reminder-date"><br><br>
-
-                    <label for="reminder-time">Time:</label>
-                    <input type="time" id="reminder-time" name="reminder-time"><br><br>
-
-                    <label for="reminder-tag">Tag (optional):</label>
-                    <input type="text" id="reminder-tag" list="tags">
-                    <datalist id="tags"></datalist><br><br>
-
-                    <button type="submit">Save Reminder</button>
-                    <button type="button" id="cancel-reminder">Cancel</button>
-                </form>
-            </div>
-        </div>
-
         <section id="reminder-list">
             <h1>Your Reminders</h1>
+            <div id="reminder-summary" class="reminder-summary-box">
+                </div>
+
+            <button id="show-add-reminder-modal"><strong>Add New Reminder</strong></button>
+        
+            <div id="add-reminder-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-button">&times;</span>
+                    <h2>Add/Edit Reminder</h2>
+                    <form id="reminder-form">
+                        <input type="hidden" id="reminder-id-hidden"> <label for="reminder-text">Reminder:</label>
+                        <input type="text" id="reminder-text" name="reminder-text" required><br><br>
+
+                        <label for="reminder-date">Date:</label>
+                        <input type="date" id="reminder-date" name="reminder-date"><br><br>
+
+                        <label for="reminder-time">Time:</label>
+                        <input type="time" id="reminder-time" name="reminder-time"><br><br>
+
+                        <label for="reminder-tag">Tag (optional):</label>
+                        <input type="text" id="reminder-tag" list="tags">
+                        <datalist id="tags"></datalist><br><br>
+
+                        <button type="submit">Save Reminder</button>
+                        <button type="button" id="cancel-reminder">Cancel</button>
+                    </form>
+                </div>
+            </div>
 
             <div class="search-bar-container">
                 <input type="search" id="search-reminders" placeholder="Search reminders...">
@@ -60,6 +62,7 @@
                 </ul>
             <p id="empty-list-message" style="display:none;">No reminders yet. Add one!</p>
         </section>
+        
     </main>
 
     <!-- Pop-up to show `reminder` completed -->
@@ -81,7 +84,7 @@
     </div>
 
     <footer>
-        <p><strong>&copy; 2025 Pockit</strong> • <a href="privacy.html">Privacy</a></p>
+        <p>Pockit is an <a href="https://rdt.myorchard.org">Orchard</a> project. <strong>&copy; Orchard 2026</strong> • <a href="privacy.html">Privacy</a></p>
     </footer>
 
     <script src="script.js"></script>
